@@ -1,5 +1,5 @@
 {
-    "name": "AgentCoop/laravel-project-blueprint",
+    "name": "agentcoop/laravel-project-blueprint",
     "description": "Boilerplate code for projects based on Laravel PHP framework.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
