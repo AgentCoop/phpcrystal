@@ -1,0 +1,74 @@
+FROM php:7.2.1-fpm-alpine3.7
+
+RUN apk add --no-cache --virtual .persistent-deps \
+    geoip \
+    yarn \
+    freetype \
+    tzdata
+
+RUN set -xe \
+	&& apk add --no-cache --virtual .build-deps \
+		$PHPIZE_DEPS \
+        freetype-dev \
+        geoip-dev \
+        openssl-dev \
+        libpng \
+        libjpeg-turbo
+
+# Install Supervisor
+RUN set -xe \
+    && apk add --no-cache -u python py-pip \
+    && pip install supervisor==3.3.1
+
+# Install required PHP extensions
+RUN set -xe \
+    && docker-php-ext-install bcmath \
+    && docker-php-ext-install gd \
+    && docker-php-ext-install pdo_mysql \
+    && pecl install mongodb \
+    && pecl install xdebug-2.6.0beta1 \
+    && echo 'no' | pecl install redis  \
+    && pecl install geoip-1.1.1
+
+RUN  set -xe \
+    && echo 'extension=geoip.so'     > $PHP_INI_DIR/conf.d/geoip.ini \
+    && echo 'extension=redis.so'     > $PHP_INI_DIR/conf.d/redis.ini \
+    && echo 'extension=mongodb.so'   > $PHP_INI_DIR/conf.d/mongodb.ini \
+    && { \
+        echo 'zend_extension=xdebug.so'; \
+        echo 'xdebug.idekey=xdebug'; \
+        echo 'xdebug.max_nesting_level=500'; \
+        echo 'xdebug.remote_enable=On'; \
+        echo 'xdebug.remote_connect_back=1'; \
+        echo 'xdebug.remote_port=9000'; \
+    } > $PHP_INI_DIR/conf.d/xdebug.ini
+
+RUN set -ex \
+    && cd /tmp \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
+    && wget http://phar.phpunit.de/phpunit-6.5.phar \
+    && mv phpunit-6.5.phar /usr/local/bin/phpunit \
+    && chmod +x /usr/local/bin/phpunit
+
+COPY ./config/docker/php/dev/php.ini $PHP_INI_DIR/
+COPY ./config/docker/php/dev/php-fpm/www.conf $PHP_INI_DIR/php-fpm.d/
+
+ADD . /var/www/html
+
+RUN set -xe \
+    && cd /var/www/html \
+    && yarn global add gulp \
+    && yarn install
+
+RUN set -xe \
+    && cd /var/www/html \
+    && composer install --no-progress
+
+# Entrypoint
+COPY ./config/docker/php/dev/php-fpm.sh /php-fpm.sh
+RUN chmod +x /php-fpm.sh
+CMD ["/php-fpm.sh"]
+
+RUN apk del .build-deps
+
+VOLUME ["/var/www"]

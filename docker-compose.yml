@@ -1,0 +1,37 @@
+version: '2'
+services:
+  lpb-php:
+    build: .
+    container_name: "php.laravel-project-blueprint"
+    volumes:
+      - .:/var/www/html
+      - ./vendor:/var/www/html/vendor
+    environment:
+      - XDEBUG_CONFIG='idekey=xdebug; xdebug.remote_host=192.168.0.121'
+      - MONGODB_HOST=lpb-mongodb
+
+  lpb-nginx:
+    build: ./config/docker/nginx/dev
+    container_name: "nginx.laravel-project-blueprint"
+    ports:
+      - 60001:443
+      - 60000:80
+    volumes_from:
+      - lpb-php:ro
+
+  lpb-mongodb:
+    image: mongo:3.4.1
+    container_name: "mongodb.laravel-project-blueprint"
+    volumes_from:
+      - lpb-mongodb-data
+
+  lpb-mongodb-data:
+    image: alpine
+    container_name: "data.mongodb.laravel-project-blueprint"
+    volumes:
+      - /data/db
+    command: "true"
+
+  lpb-redis:
+    image: redis:3.2.7-alpine
+    container_name: "redis.laravel-project-blueprint"
