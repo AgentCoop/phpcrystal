@@ -5,28 +5,22 @@ namespace App\Models\Logical\Repository;
 trait User
 {
     /**
-     * @return array
+     * @return string
      */
-    public function getRoles()
+    public function getEmail()
     {
-        $roles = (array)$this->roles;
-
-        return $roles;
+        return $this->email;
     }
 
     /**
-     * @param mixed $roles Array or comma-separated list of roles
+     * @param string $email
      *
      * @return $this
      */
-    public function setRoles($mixed)
+    public function setEmail($email)
     {
-        if (is_string($mixed)) {
-            $roles = $this->parseCommaSeparatedValues($mixed);
-        } else {
-            $roles = (array)$mixed;
-        }
+        $this->email = $this->sanitize($email);
 
-        return $this->validateAndSet('roles', $roles, [self::ROLE_ADMIN]);
+        return $this;
     }
 }

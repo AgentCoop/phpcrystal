@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modles\Physical;
+namespace App\Models\Physical\Repository;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -24,6 +24,16 @@ class User extends AbstractMongoDb implements
     use Authenticatable, Authorizable, CanResetPassword;
     use Notifiable;
     use UserLogical;
+
+    /**
+     * @return $this
+    */
+    public static function getByEmail($email)
+    {
+        return static::query()
+            ->where('email', $email)
+            ->firstOrFail();
+    }
 
     /**
      * The attributes that are mass assignable.
