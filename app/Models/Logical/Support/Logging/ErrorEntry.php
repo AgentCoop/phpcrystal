@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Aux\Logging;
+namespace App\Models\Logical\Support\Logging;
 
 trait ErrorEntry
 {

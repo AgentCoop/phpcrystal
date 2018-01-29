@@ -11,13 +11,13 @@ composer create-project agentcoop/laravel-project-blueprint
 ```bash
 docker-compose up --build
 ```
-Go to https://localhost:60001 and, if everthing is good, you'll see the Laravel splash page. The SSL certificate is a
+Go to https://localhost:60001 and, if everything is good, you'll see the Laravel splash page. The SSL certificate is a
 self-signed one, so don't be confused by a browser warning.
 
 # Documenation
 
 ## Controller
-In a nutshell, in a controller you should do:
+In a nutshell, in a controller you should do the following:
  1. Validate input data
  2. Pass input data to the Service layer
  3. Pass data from the Service layer to the Presentation layer

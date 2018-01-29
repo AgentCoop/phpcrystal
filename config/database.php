@@ -33,6 +33,18 @@ return [
 
     'connections' => [
 
+        'mongodb' => [
+            'driver'   => 'mongodb',
+            'host'     => env('MONGODB_HOST', 'lpb-mongodb'),
+            'port'     => env('MONGODB_PORT', 27017),
+            'username' => env('MONGODB_USERNAME', ''),
+            'password' => env('MONGODB_PASSWORD', ''),
+            'database' => env('MONGODB_DATABASE', 'laravelProjectBlueprint'),
+            'options' => [
+                'db' => env('MONGODB_AUTHDATABASE', '') //Sets the auth DB
+            ]
+        ],
+
         'sqlite' => [
             'driver' => 'sqlite',
             'database' => env('DB_DATABASE', database_path('database.sqlite')),

@@ -2,8 +2,8 @@
 
 namespace App\Exceptions;
 
-use App\Models\Aux\Logging\MySqlErrorEntry;
-use App\Models\Aux\Logging\MongoDbErrorEntry;
+use App\Models\Physical\Support\Logging\MongoDB\ErrorEntry as ErrorEntryMongoDb;
+use App\Models\Physical\Support\Logging\MySQL\ErrorEntry as ErrorEntryMySql;
 
 use Auth;
 use Illuminate\Support\Facades\Config;
@@ -25,10 +25,10 @@ class Loggable extends AbstractException
 
         switch ($conn) {
             case 'mysql':
-                return new MySqlErrorEntry();
+                return new ErrorEntryMySql();
 
             case 'mongodb':
-                return new MongoDbErrorEntry();
+                return new ErrorEntryMongoDb();
 
             default:
                 throw new \RuntimeException(sprintf('Unsupported database %s', $conn));
