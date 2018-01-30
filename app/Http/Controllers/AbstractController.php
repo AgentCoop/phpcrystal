@@ -16,6 +16,24 @@ class AbstractController extends BaseController
     /**
      *
      */
+    protected function i18View($dirpath, $data = [])
+    {
+        $locale = app()->getLocale();
+
+        switch ($locale) { // Add supported localizations here
+            default:
+                $viewName = 'default';
+                break;
+        }
+
+        $viewPath = ltrim($dirpath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $viewName;
+
+        return view($viewPath, $data);
+    }
+
+    /**
+     *
+     */
     protected function handleException(\Exception $e, Request $request = null, $withRedirect = null)
     {
         Loggable::create($e->getMessage(), $e->getCode())

@@ -57,7 +57,6 @@ ADD . /var/www/html
 
 RUN set -xe \
     && cd /var/www/html \
-    && yarn global add gulp \
     && yarn install
 
 RUN set -xe \
@@ -69,6 +68,5 @@ COPY ./config/docker/php/dev/php-fpm.sh /php-fpm.sh
 RUN chmod +x /php-fpm.sh
 CMD ["/php-fpm.sh"]
 
-RUN apk del .build-deps
 
 VOLUME ["/var/www"]

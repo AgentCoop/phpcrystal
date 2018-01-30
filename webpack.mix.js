@@ -11,5 +11,19 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/js')
-   .sass('resources/assets/sass/app.scss', 'public/css');
+////
+//// Frontend
+////
+
+// Bundle up application plain CSS files
+mix.styles([
+    'resources/views/frontend/**/*.css'
+], 'public/css/frontend/all.css');
+
+if (mix.inProduction()) {
+    mix.version();
+}
+
+mix.autoload({
+    jquery: ['$', 'window.jQuery']
+});
