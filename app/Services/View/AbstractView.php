@@ -7,7 +7,8 @@ use Carbon\Carbon;
 
 abstract class AbstractView
 {
-    protected $dataSource;
+    /** @var mixed $ds A datasource for the view component */
+    protected $ds;
 
     /**
      * @return static
@@ -22,7 +23,7 @@ abstract class AbstractView
     */
     public function __construct($dataSource, ...$rest)
     {
-        $this->dataSource = $dataSource;
+        $this->ds = $dataSource;
     }
 
     /**
@@ -127,7 +128,7 @@ abstract class AbstractView
     }
 
     /**
-     * @return
+     * @return string
      */
     protected function renderBladeMarkup($bladeMarkup)
     {
