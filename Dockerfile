@@ -53,6 +53,9 @@ RUN set -ex \
 COPY ./config/docker/php/dev/php.ini $PHP_INI_DIR/
 COPY ./config/docker/php/dev/php-fpm/www.conf $PHP_INI_DIR/php-fpm.d/
 
+# Add a cron entry for Laravel's command scheduler
+RUN set -ex \
+    && crontab -l | { cat; echo "* * * * * php /var/www/html/artisan schedule:run 2>&1"; } | crontab
 ADD . /var/www/html
 
 RUN set -xe \

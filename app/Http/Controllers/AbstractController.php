@@ -22,7 +22,7 @@ class AbstractController extends BaseController
 
         switch ($locale) { // Add supported localizations here
             default:
-                $viewName = 'default';
+                $viewName = 'index';
                 break;
         }
 

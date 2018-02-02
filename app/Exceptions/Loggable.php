@@ -8,6 +8,8 @@ use App\Models\Physical\Support\Logging\MySQL\ErrorEntry as ErrorEntryMySql;
 use Auth;
 use Illuminate\Support\Facades\Config;
 
+use App\Jobs\Support\ErrorReport;
+
 /**
  *
  */
@@ -101,16 +103,13 @@ class Loggable extends AbstractException
                 ->setRequestQuery(@$_SERVER['QUERY_STRING'])
                 ->setRemoteAddr(@$_SERVER['REMOTE_ADDR'])
                 ->setUserAgent(@$_SERVER['HTTP_USER_AGENT'])
+                ->setRequestMimeType(@$_SERVER['CONTENT_TYPE'])
             ;
 
             $entityBody = file_get_contents('php://input');
 
             // Do not save large request entity body
-            if ($entityBody > 512) {
-                $logEntry->setRequestBody('len:' . strlen($entityBody) . ';body:' . substr($entityBody, 0, 512));
-            } else {
-                $logEntry->setRequestBody($entityBody);
-            }
+            $logEntry->setRequestBody(substr($entityBody, 0, 1024));
         }
 
         $logEntry->save();
@@ -128,5 +127,20 @@ class Loggable extends AbstractException
         }
 
         throw $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function withReport($recipients)
+    {
+        $recipients = (array)$recipients;
+
+        foreach ($recipients as $email) {
+            dispatch(new ErrorReport($email, $this->getCode(), $this->getMessage()))
+                ->onQueue('mailer');
+        }
+
+        return $this;
     }
 }

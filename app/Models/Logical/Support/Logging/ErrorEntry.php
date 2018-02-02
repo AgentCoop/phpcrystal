@@ -99,7 +99,7 @@ trait ErrorEntry
      */
     public function getRequestMethod()
     {
-        return $this->request_method;
+        return $this->req_method;
     }
 
     /**
@@ -107,7 +107,7 @@ trait ErrorEntry
      */
     public function setRequestMethod($method)
     {
-        $this->request_method = $method;
+        $this->req_method = $method;
 
         return $this;
     }
@@ -117,7 +117,7 @@ trait ErrorEntry
      */
     public function getRequestUri()
     {
-        return $this->request_uri;
+        return $this->req_uri;
     }
 
     /**
@@ -125,7 +125,7 @@ trait ErrorEntry
      */
     public function setRequestUri($uri)
     {
-        $this->request_uri = $uri;
+        $this->req_uri = $uri;
 
         return $this;
     }
@@ -135,7 +135,7 @@ trait ErrorEntry
      */
     public function getRequestBody()
     {
-        return $this->request_body;
+        return $this->req_body;
     }
 
     /**
@@ -143,7 +143,25 @@ trait ErrorEntry
      */
     public function setRequestBody($body)
     {
-        $this->request_body = $body;
+        $this->req_body = $body;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestMimeType()
+    {
+        return $this->req_mime_type;
+    }
+
+    /**
+     * @return static
+     */
+    public function setRequestMimeType($mimeType)
+    {
+        $this->req_mime_type = $mimeType;
 
         return $this;
     }
