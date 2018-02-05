@@ -30,7 +30,7 @@ class ErrorReport extends AbstractJob
         try {
             $mailer->sendErrorReport($this->recipient, $this->errorCode, $this->errorMessage);
         } catch (\Exception $e) {
-            $this->release(10);
+            $this->fail($e);
         }
     }
 }

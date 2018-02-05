@@ -2,10 +2,12 @@
 
 namespace App\Console\Commands\Support;
 
-use Illuminate\Console\Command;
+use App\Console\AbstractCommand;
+use App\Models\Physical\DAL\AbstractMongoDb;
 
+use App\Services\AbstractSupport;
 
-class GarbageCollector extends Command
+class GarbageCollector extends AbstractCommand
 {
     const TARGET_ERROR_LOG = 'error-log';
 
@@ -14,7 +16,7 @@ class GarbageCollector extends Command
      *
      * @var string
      */
-    protected $signature = 'support:garbage-collector {target} {--dry-run}';
+    protected $signature = 'support:garbage-collector {target} {--before=} {--dry-run}';
 
     /**
      * The console command description.
@@ -29,11 +31,32 @@ class GarbageCollector extends Command
     protected $dryRunFlag;
 
     /**
+     * @var \Carbon\Carbon
+    */
+    protected $beforeDt;
+
+    /**
      *
      */
     private function cleanErroLog()
     {
+        if ( ! $this->beforeDt) {
+            $this->err('You must specify a date before which all entries will be deleted');
+        }
 
+        $query = AbstractSupport::logEntryFactory()->newQuery();
+
+        $query->where(AbstractMongoDb::CREATED_AT, '<', $this->beforeDt);
+        $entries = $query->get();
+
+        if ( ! $this->dryRunFlag) {
+            foreach ($entries as $entry) {
+                $entry->delete();
+            }
+        }
+
+        $this->inf('%d of error log entries have been deleted' .  ( $this->dryRunFlag ? ' (DRY RUN)'  : '' ),
+            $entries->count());
     }
 
     /**
@@ -44,6 +67,8 @@ class GarbageCollector extends Command
     public function handle()
     {
         $this->dryRunFlag = $this->option('dry-run');
+        $this->beforeDt = $this->parseTimeOption('before');
+
         $target = $this->argument('target');
 
         switch ($target) {

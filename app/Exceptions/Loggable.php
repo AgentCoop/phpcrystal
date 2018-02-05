@@ -2,11 +2,8 @@
 
 namespace App\Exceptions;
 
-use App\Models\Physical\Support\Logging\MongoDB\ErrorEntry as ErrorEntryMongoDb;
-use App\Models\Physical\Support\Logging\MySQL\ErrorEntry as ErrorEntryMySql;
-
+use App\Services\AbstractSupport;
 use Auth;
-use Illuminate\Support\Facades\Config;
 
 use App\Jobs\Support\ErrorReport;
 
@@ -17,25 +14,6 @@ class Loggable extends AbstractException
 {
     protected $fields = [];
     protected $dataBag = [];
-
-    /**
-     * @return MySqlErrorEntry|MongoDbErrorEntry
-    */
-    final public static function logEntryFactory()
-    {
-        $conn = Config::get('database.default');
-
-        switch ($conn) {
-            case 'mysql':
-                return new ErrorEntryMySql();
-
-            case 'mongodb':
-                return new ErrorEntryMongoDb();
-
-            default:
-                throw new \RuntimeException(sprintf('Unsupported database %s', $conn));
-        }
-    }
 
     /**
      * @return $this
@@ -79,10 +57,10 @@ class Loggable extends AbstractException
     final public function save()
     {
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        $funcName  = $backtrace[2]['function'];
-        $className= $backtrace[2]['class'];
+        $funcName  = @$backtrace[1]['function'];
+        $className = @$backtrace[1]['class'];
 
-        $logEntry = self::logEntryFactory();
+        $logEntry = AbstractSupport::logEntryFactory();
         $logEntry
             ->setType($this->getType())
             ->setFunctionName($funcName)
