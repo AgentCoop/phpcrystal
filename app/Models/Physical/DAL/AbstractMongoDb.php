@@ -11,6 +11,20 @@ abstract class AbstractMongoDb extends Model
     use Common;
 
     /**
+     * Return total count of documents in the collection
+     *
+     * @return integer
+     */
+    final public static function getTotalCount()
+    {
+        $count = DB::collection((new static())->collection)->raw(function($collection) {
+            return $collection->count();
+        });
+
+        return $count;
+    }
+
+    /**
      * @return $this
      */
     final public static function findOrNew($attrs)
