@@ -52,4 +52,12 @@ class User extends AbstractMongoDb implements
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * @return $this
+    */
+    public function setRoles($roles)
+    {
+        return $this->validateAndSet('roles', $this->parseCommaSeparatedValues($roles), [self::ROLE_ADMIN]);
+    }
 }

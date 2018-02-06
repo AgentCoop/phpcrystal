@@ -23,4 +23,20 @@ trait User
 
         return $this;
     }
+
+    /**
+     * @return array
+    */
+    public function getRoles()
+    {
+        return (array)$this->roles;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return in_array(self::ROLE_ADMIN, $this->getRoles());
+    }
 }

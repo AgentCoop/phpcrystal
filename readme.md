@@ -1,5 +1,10 @@
 ## About this repository
-LPB is a Web skeleton application based on Laravel PHP framework.
+LPB is a Web skeleton application based on Laravel PHP framework. Out of the box you will get:
+1. Extended Laravel controller
+2. Basic classes for models and view services
+3. Error logging and reporting
+4. A default view template for emails
+5. A Docker configuration to run your application
 
 ## Installation
 Create a new project:

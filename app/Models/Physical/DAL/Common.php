@@ -88,7 +88,7 @@ trait Common
         $results = [];
 
         foreach ($values as $value) {
-            $values[] = $this->sanitize($value);
+            $results[] = $this->sanitize($value);
         }
 
         return $results;

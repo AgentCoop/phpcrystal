@@ -40,15 +40,36 @@ abstract class AbstractMongoDb extends Model
     }
 
     /**
+     * @return array|false
+    */
+    private function prepareMultiValued($mixed)
+    {
+        if (is_string($mixed)) {
+            return $this->sanitizeArray($this->parseCommaSeparatedValues($mixed));
+        } else if (is_array($mixed)) {
+            return $this->sanitizeArray($mixed);
+        } else if (is_null($mixed)) {
+            return [];
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @return $this
      */
-    protected function validateAndSet($attrName, $attrValues, array $allowedValues)
+    protected function validateAndSet($attrName, $mixed, array $allowedValues)
     {
-        $attrValues = (array)$attrValues;
+        $attrValues = $this->prepareMultiValued($mixed);
+
+        if ($attrValues === false) {
+            throw new \RuntimeException(sprintf('Wrong data type %s [%s:%s]',
+                gettype($mixed), static::class, $attrName));
+        }
 
         foreach ($attrValues as $attrValue) {
             if ( ! in_array($attrValue, $allowedValues, true)) {
-                throw new \UnexpectedValueException(sprintf('The value "%s" for the attribute "%s:%s" is not a valid one!',
+                throw new \UnexpectedValueException(sprintf('Attribute value "%s" is not allowed [%s:%s]',
                     $attrValue, static::class, $attrName));
             }
         }
