@@ -25,6 +25,8 @@ class User extends AbstractMongoDb implements
     use Notifiable;
     use UserLogical;
 
+    protected $collection = 'users';
+
     /**
      * @return $this
     */

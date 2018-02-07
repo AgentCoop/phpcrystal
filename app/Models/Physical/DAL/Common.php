@@ -5,6 +5,17 @@ namespace App\Models\Physical\DAL;
 trait Common
 {
     /**
+     * @throws \RuntimeException
+     * @return void
+    */
+    final public static function checkOrderDir($dir)
+    {
+        if ( ! in_array($dir, ['desc', 'asc'])) {
+            throw new \RuntimeException(sprintf('Not a valid order direction %s', $dir));
+        }
+    }
+
+    /**
      * @return \Carbon\Carbon|null
      */
     final public function getCreatedAt()

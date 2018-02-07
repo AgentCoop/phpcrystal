@@ -12,6 +12,7 @@ use App\Models\Physical\Repository\User;
 class LaravelProjectBlueprintTest extends TestCase
 {
     const TEST_EMAIL = 'test@mail.com';
+    const TEST_EMAIL_2 = 'test2@mail.com';
 
     /**
      * @return void
@@ -40,11 +41,45 @@ class LaravelProjectBlueprintTest extends TestCase
                 ->save();
             $user->refresh();
 
-            $user = User::getByEmail(self::TEST_EMAIL);
-            $this->assertEquals(self::TEST_EMAIL, $user->getEmail());
+            $user1 = User::getByEmail(self::TEST_EMAIL);
+            $this->assertEquals(self::TEST_EMAIL, $user1->getEmail());
 
+            $user->delete();
         } catch (\Exception $e) {
             $this->assertTrue(false);
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function testDataPagination()
+    {
+        $user = new User();
+        $user
+            ->setEmail(self::TEST_EMAIL)
+            ->save();
+        $user->refresh();
+
+        sleep(1);
+
+        $user1 = new User();
+        $user1
+            ->setEmail(self::TEST_EMAIL_2)
+            ->save();
+        $user1->refresh();
+
+        $pagedData = User::getPaged(1, 10, function($query) {
+            User::orderByCreatedAt($query, User::ORDER_DIR_DESC);
+        });
+
+        $this->assertEquals(2, $pagedData['items']->count());
+        $this->assertEquals(2, $pagedData['items.count']);
+        $this->assertEquals(1, $pagedData['pages.current']);
+        $this->assertEquals(1, $pagedData['pages.count']);
+        $this->assertEquals(self::TEST_EMAIL_2, $pagedData['items'][0]->getEmail());
+
+        $user->delete();
+        $user1->delete();
     }
 }

@@ -2,13 +2,36 @@
 
 namespace App\Models\Physical\DAL;
 
-use App\Models\Physical\DAL\Common;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Jenssegers\Mongodb\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Builder;
 
 abstract class AbstractMongoDb extends Model
 {
+    const ORDER_DIR_DESC = 'desc';
+    const ORDER_DIR_ASC = 'asc';
+
     use Common;
+
+    /**
+     * @return void
+    */
+    final public static function orderByCreatedAt(Builder $query, $dir)
+    {
+        self::checkOrderDir($dir);
+
+        $query->orderBy(self::CREATED_AT, $dir);
+    }
+
+    /**
+     * @return void
+     */
+    final public static function orderByUpdatedAt(Builder $query, $dir)
+    {
+        self::checkOrderDir($dir);
+
+        $query->orderBy(self::UPDATED_AT, $dir);
+    }
 
     /**
      * Return total count of documents in the collection
@@ -22,6 +45,44 @@ abstract class AbstractMongoDb extends Model
         });
 
         return $count;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getPaged($pageNum, $perPage, callable $orderCb = null, callable $filterCb = null)
+    {
+        $query = static::query();
+
+        $itemsTotalCount = static::getTotalCount();
+        $pagesTotalCount = ceil($itemsTotalCount / $perPage);
+
+        $offset = intval(($pageNum - 1) * $perPage);
+
+        if ($offset) {
+            $query->skip($offset);
+        }
+
+        // Order items in ascending or descending direction
+        if ($orderCb) {
+            $orderCb($query);
+        }
+
+        $query->take(intval($perPage));
+
+        $items = $query->get();
+
+        // Filter out the selected items
+        if ($filterCb) {
+            $items = $filterCb($items);
+        }
+
+        return [
+            'items' => $items,
+            'items.count' => $itemsTotalCount,
+            'pages.count' => $pagesTotalCount,
+            'pages.current' => $pageNum
+        ];
     }
 
     /**
