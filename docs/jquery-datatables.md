@@ -2,6 +2,36 @@
 
 ##  Example of retrieving table rows
 
+```javascript
+        $(document).ready(function() {
+            var $dt = $('#order-table').dataTable( {
+                "order": [[ 2, "desc" ]],
+                "pageLength": 10,
+                "processing": true,
+                "serverSide": true,
+                "ajax": "{{ route('api_fetch_order_records') }}",
+                "deferLoading": 100,
+                "columnDefs": [
+                    { className: "nowrap", "targets": [ 2,3,4,5 ] },
+                ],
+                "columns": [
+                    { "data": "order_num" },
+                    { "data": "order_id" },
+                    { "data": "created_at" },
+                    { "data": "closed_at" },
+                    { "data": "processed_at" },
+                    { "data": "cancelled_at" },
+                    { "data": "total_price" },
+                    { "data": "cust_name" },
+                    { "data": "cust_email" },
+                    { "data": "status" }
+                ]
+            });
+
+            $dt.fnDraw();
+        });
+```
+
 ```php
     /**
      *
