@@ -134,4 +134,37 @@ abstract class AbstractView
     {
         return $this->phpEval(Blade::compileString($bladeMarkup));
     }
+
+    /**
+     * Return data object for DataTables AJAX requests https://datatables.net/examples/server_side/simple.html
+     *
+     * @param integer $itemsTotalCount Total count of items (table rows or documents in a collection)
+     * @param callable $filterCb A callback for item filtering
+     *
+     * @return \stdClass
+     */
+    public function getDataTablesRows($itemsTotalCount, callable $filterCb = null)
+    {
+        $result = new \stdClass;
+
+        $result->draw = null;
+        $result->recordsTotal = $itemsTotalCount;
+
+        $allItems = collect($this->getData()['items']);
+
+        if ($filterCb) {
+            $items = $allItems->filter(function($item, $key) use ($filterCb) {
+                return $filterCb($item, $key);
+            })->values();
+            $filteredCount = count($items);
+        } else {
+            $items = $allItems;
+            $filteredCount = $itemsTotalCount;
+        }
+
+        $result->data = $items->toArray();
+        $result->recordsFiltered = $filteredCount;
+
+        return $result;
+    }
 }

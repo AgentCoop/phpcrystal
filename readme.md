@@ -23,7 +23,8 @@ Licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 # Documenation
 
-## MVC
-* [Model](docs/model.md)
-* [View](docs/view.md)
-* [Controller](docs/controller.md)
+## Table of contents
+1. [Model](docs/model.md)
+2. [View](docs/view.md)
+    1. [jQuery DataTables plugin](docs/datatables-rows.md)
+3. [Controller](docs/controller.md)

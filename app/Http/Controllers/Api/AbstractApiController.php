@@ -58,6 +58,14 @@ abstract class AbstractApiController extends AbstractController
     /**
      * @return \Illuminate\Http\JsonResponse
      */
+    protected function responseJson($data = [])
+    {
+        return response()->json($data);
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     protected function forbidden()
     {
         return response()->json(null, 403);
