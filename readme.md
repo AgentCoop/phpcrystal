@@ -26,5 +26,5 @@ Licensed under the [MIT license](https://opensource.org/licenses/MIT).
 ## Table of contents
 1. [Model](docs/model.md)
 2. [View](docs/view.md)
-    1. [jQuery DataTables plugin](docs/datatables-rows.md)
+    1. [jQuery DataTables plugin](docs/jquery-datatables.md)
 3. [Controller](docs/controller.md)
