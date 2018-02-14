@@ -1,5 +1,5 @@
 # Model
-Basically, the model component is divided into the two parts: logical and physical. The application PHP classes for those parts are located in **./app/Models/Logical/Repository/** and **./app/Models/Physical/Repository/** correspondingly.
+Basically, the model component is divided into the two parts: logical and physical. The application classes for those parts are located in **./app/Models/Logical/Repository/** and **./app/Models/Physical/Repository/** correspondingly.
 
 Every logical model has a related physical one, so, to ease navigation, the filesystem hierarchy of these two directories should be the same.
 
@@ -30,6 +30,16 @@ trait User
     {
         $this->email = $this->sanitize($email);
 
+        return $this;
+    }
+    
+    /**
+     * @return $this
+     */
+    public function addPreferences($preferences)
+    {
+        $this->preferences()->save($preferences);
+        
         return $this;
     }
 }
@@ -71,6 +81,14 @@ class User extends AbstractMongoDb implements
         return static::query()
             ->where('email', $email)
             ->firstOrFail();
+    }
+    
+    /**
+     * @return \Jenssegers\Mongodb\Relations\HasMany
+    */
+    protected function preferences()
+    {
+        return $this->hasMany(Preferences::class);
     }
 
     /**
