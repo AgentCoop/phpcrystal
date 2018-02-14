@@ -139,7 +139,7 @@ abstract class AbstractView
      * Return data object for DataTables AJAX requests https://datatables.net/examples/server_side/simple.html
      *
      * @param integer $itemsTotalCount Total count of items (table rows or documents in a collection)
-     * @param callable $filterCb A callback for item filtering
+     * @param callable $filterCb A callback for items filtering
      *
      * @return \stdClass
      */

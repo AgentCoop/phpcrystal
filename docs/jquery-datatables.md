@@ -70,7 +70,7 @@
                 };
             }
             
-            $pagerData = Order::getPaged($offset, $pageLength, $orderCb);
+            $pagerData = Order::getPaged($pageNum, $pageLength, $orderCb);
             
             $tableRecords = BackofficeView\Order\ListView::create($pagerData['items'])
                 ->getDataTablesRows(Order::getTotalCount(), $filterCb);

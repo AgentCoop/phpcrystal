@@ -41,7 +41,7 @@ class GarbageCollector extends AbstractCommand
     private function cleanErroLog()
     {
         if ( ! $this->beforeDt) {
-            $this->err('You must specify a date before which all entries will be deleted');
+            $this->err('You must specify a date before that all entries will be deleted');
         }
 
         $query = AbstractSupport::logEntryFactory()->newQuery();
