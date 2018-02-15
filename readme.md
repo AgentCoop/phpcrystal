@@ -23,7 +23,7 @@ Licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 # Documenation
 
-## Table of contents
+## Contents
 1. [Model](docs/model.md)
 2. [View](docs/view.md)
     1. [Blade templates compiling](docs/blade-compiling.md)
