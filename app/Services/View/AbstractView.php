@@ -11,6 +11,11 @@ abstract class AbstractView
     protected $ds;
 
     /**
+     * @return array
+    */
+    abstract public function getData();
+
+    /**
      * @return static
      */
     final public static function create($dataSource = null, ...$rest)
@@ -130,9 +135,9 @@ abstract class AbstractView
     /**
      * @return string
      */
-    protected function renderBladeMarkup($bladeMarkup)
+    protected function renderBladeMarkup($bladeMarkup, array $data = [])
     {
-        return $this->phpEval(Blade::compileString($bladeMarkup));
+        return $this->phpEval(Blade::compileString($bladeMarkup), $data);
     }
 
     /**

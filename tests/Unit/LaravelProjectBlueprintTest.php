@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Fixture as Fixture;
 
 use App\Exceptions\Loggable;
 use App\Models\Physical\Support\Logging\MongoDB\ErrorEntry;
@@ -81,5 +81,15 @@ class LaravelProjectBlueprintTest extends TestCase
 
         $user->delete();
         $user1->delete();
+    }
+
+    /**
+     * @return void
+    */
+    public function testBladeTemplateCompiling()
+    {
+        $compiled = Fixture\TestView::create()->testCompileBlateTemplate('Hello, {{ $var }}!', ['var' => 'World']);
+
+        $this->assertEquals('Hello, World!', $compiled);
     }
 }
