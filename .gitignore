@@ -9,4 +9,7 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+supervisord.*
+routes/map.php
+routes/*_module.php
 

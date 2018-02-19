@@ -5,6 +5,8 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+use PhpCrystal\Core\Console\Commands as CoreCommands;
+
 use App\Console\Commands\Support as Support;
 
 class Kernel extends ConsoleKernel
@@ -15,7 +17,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Support\GarbageCollector::class
+        Support\GarbageCollector::class,
+        CoreCommands\PackageBuilder::class
     ];
 
     /**

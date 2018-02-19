@@ -2,8 +2,14 @@
 
 namespace Tests\Unit;
 
+use App\Services\Support\Filesystem\Scanner;
+
+use PhpCrystal\Core\Services\Package\Manager as PackageManager;
+
 use Tests\TestCase;
 use Tests\Fixture as Fixture;
+
+use App\Services\Support\Module\Manifest as ModuleManifest;
 
 use App\Exceptions\Loggable;
 use App\Models\Physical\Support\Logging\MongoDB\ErrorEntry;
@@ -91,5 +97,38 @@ class LaravelProjectBlueprintTest extends TestCase
         $compiled = Fixture\TestView::create()->testCompileBlateTemplate('Hello, {{ $var }}!', ['var' => 'World']);
 
         $this->assertEquals('Hello, World!', $compiled);
+    }
+
+    /**
+     * @return void
+    */
+    public function testContainer()
+    {
+        $manifest = ModuleManifest::createFromFile(base_path() . '/tests/Fixture/manifest.php');
+
+        $this->assertEquals('/', $manifest->get('router.prefix'));
+    }
+
+    /**
+     * @return void
+     */
+    public function testScanner()
+    {
+        Scanner::findByFilename(base_path().'/tests/Fixture', 'manifest.php', function($realpath) {
+            $this->assertEquals(base_path().'/tests/Fixture/manifest.php', $realpath);
+        })->run();
+    }
+
+    /**
+     * @return void
+     */
+    public function testPackageManager()
+    {
+        $manager = new PackageManager();
+        $manager->run();
+
+        //$this->assertEquals(1, count($manager->getModules()));
+
+        //$manager->getModules()[0]->dumpRoutes();
     }
 }

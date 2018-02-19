@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\View;
+namespace PHpCrystal\Core\Component;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
