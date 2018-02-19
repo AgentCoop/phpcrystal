@@ -1,10 +1,7 @@
-## About this repository
-LPB is a Web skeleton application based on Laravel PHP framework. Out of the box you will get:
-1. Extended Laravel controller
-2. Basic classes for models and view services
-3. Error logging and reporting
-4. A default view template for emails
-5. A Docker configuration to run your application
+<p align="center"><img src="https://avatars2.githubusercontent.com/u/13236453"></p>
+
+## About PhpCrystal
+PhpCrystal is an extension of the popular PHP framework Laravel shipped with a modular approach and functionalities such as Symfony annotated routing mechanism, error logging and reporting, extended MVC classes, Docker configuration and many others.
 
 ## Installation
 Create a new project:
@@ -15,8 +12,7 @@ Build Docker images:
 ```bash
 docker-compose up --build
 ```
-Go to https://localhost:60001 and, if everything is good, you'll see the Laravel welcome page. The SSL certificate is a
-self-signed one, so don't be confused by a browser warning.
+Go to http://localhost:60000 and, if everything is good, you'll see the Laravel welcome page.
 
 ## License
 Licensed under the [MIT license](https://opensource.org/licenses/MIT).
@@ -29,3 +25,4 @@ Licensed under the [MIT license](https://opensource.org/licenses/MIT).
     1. [Blade templates compiling](docs/blade-compiling.md)
     2. [jQuery DataTables plugin](docs/jquery-datatables.md)
 3. [Controller](docs/controller.md)
+4. [Annotated routing](docs/routing.md)

@@ -196,8 +196,10 @@ DOC;
     public function build($env = PackageManager::LOCAL_ENV)
     {
         $manifest = $this->getManifest();
-        $manifest->setEnv($env);
-        $manifest->reload();
+
+        $manifest
+            ->setEnv($env)
+            ->reload();
 
         file_put_contents($this->getRoutesDumpFilename(), $this->generateRoutes());
     }
