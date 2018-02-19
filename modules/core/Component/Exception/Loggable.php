@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Exceptions;
+namespace PhpCrystal\Core\Component\Exception;
 
-use App\Services\AbstractSupport;
+use PhpCrystal\Core\Services\Factory;
 use Auth;
 
-use App\Jobs\Support\ErrorReport;
+use PhpCrystal\Core\Jobs\ErrorReport;
 
 /**
  *
@@ -60,7 +60,7 @@ class Loggable extends AbstractException
         $funcName  = @$backtrace[1]['function'];
         $className = @$backtrace[1]['class'];
 
-        $logEntry = AbstractSupport::logEntryFactory();
+        $logEntry = Factory::logEntryFactory();
         $logEntry
             ->setType($this->getType())
             ->setFunctionName($funcName)
@@ -97,6 +97,8 @@ class Loggable extends AbstractException
 
     /**
      * @return void
+     *
+     * @throws $this
      */
     public function _throw($save = true)
     {

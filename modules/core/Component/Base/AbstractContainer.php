@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Support\Base;
+namespace PhpCrystal\Core\Component\Base;
 
 const ITEM_OPERATION_ADD = 1;
 const ITEM_OPERATION_REMOVE = 2;
@@ -21,6 +21,9 @@ abstract class AbstractContainer
      * @var boolean
      */
     protected $allowOverride = true;
+
+    /** @var string */
+    protected $filename;
 
     /**
      * @return $this
@@ -51,10 +54,20 @@ abstract class AbstractContainer
     }
 
     /**
+     * @return void
+    */
+    public function reload()
+    {
+        $this->loadFromFile($this->filename);
+    }
+
+    /**
      * @return $this
      */
     public function loadFromFile($filename)
     {
+        $this->filename = $filename;
+
         require($filename);
 
         return $this;

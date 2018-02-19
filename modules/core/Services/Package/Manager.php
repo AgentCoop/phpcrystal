@@ -2,21 +2,22 @@
 
 namespace PhpCrystal\Core\Services\Package;
 
-use App\Services\Support\Filesystem\Scanner;
+use PhpCrystal\Core\Services\Filesystem\Finder;
 use PhpCrystal\Core\Services\Base\PhpParser;
 
 class Manager
 {
-    private $modules = [];
+    const LOCAL_ENV = 'local';
+    const PRODUCTION_ENV = 'prod';
 
-    private $routesMapContent;
+    private $modules = [];
 
     /**
      * @return void
      */
     private function scanModules()
     {
-        Scanner::findByFilename(base_path() . '/modules', 'manifest.php', function($manifest) {
+        Finder::findByFilename(base_path() . '/modules', 'manifest.php', function($manifest) {
             $this->modules[] = new Module\Module(Module\Manifest::createFromFile($manifest), dirname($manifest));
         })
             ->setMaxDepth(1)
@@ -88,10 +89,10 @@ DOC;
     /**
      * @return void
      */
-    public function build()
+    public function build($env = self::LOCAL_ENV)
     {
         foreach ($this->getModules() as $module) {
-            $module->build();
+            $module->build($env);
         }
 
         $this->dumpRoutingMap();

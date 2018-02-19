@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Jobs\Support;
+namespace PhpCrystal\Core\Jobs;
 
-use App\Jobs\AbstractJob;
-
-use App\Services\Mailer;
+use PhpCrystal\Core\Services\Mailer;
 
 class ErrorReport extends AbstractJob
 {

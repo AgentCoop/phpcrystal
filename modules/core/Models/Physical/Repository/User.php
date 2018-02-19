@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Physical\Repository;
+namespace PhpCrystal\Core\Models\Physical\Repository;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -9,10 +9,10 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
-use App\Models\Physical\DAL\AbstractMongoDb;
+use PhpCrystal\Core\Models\Physical\DAL\AbstractMongoDb;
 use Illuminate\Notifications\Notifiable;
 
-use App\Models\Logical\Repository\User as UserLogical;
+use PhpCrystal\Core\Models\Logical\Repository\User as UserLogical;
 
 class User extends AbstractMongoDb implements
     AuthenticatableContract,

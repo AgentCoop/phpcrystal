@@ -1,5 +1,5 @@
 <?php
-namespace PHpCrystal\Core\Component;
+namespace PHpCrystal\Core\Component\Mvc;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;

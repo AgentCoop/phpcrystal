@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Logical\Support\Logging;
+namespace PhpCrystal\Core\Models\Logical\Support\Logging;
 
 trait ErrorEntry
 {

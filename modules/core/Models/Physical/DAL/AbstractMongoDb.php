@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Physical\DAL;
+namespace PhpCrystal\Core\Models\Physical\DAL;
 
 use Illuminate\Support\Facades\DB;
 use Jenssegers\Mongodb\Eloquent\Model;

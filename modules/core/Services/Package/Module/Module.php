@@ -13,6 +13,7 @@ use Doctrine\Common\Annotations\SimpleAnnotationReader;
 
 use PhpCrystal\Core\Services\Package\Annotation\Route as AnnotationRoute;
 use PhpCrystal\Core\Services\Package\Annotation\Middleware as AnnotationMiddleware;
+use PhpCrystal\Core\Services\Package\Manager as PackageManager;
 
 class Locator implements FileLocatorInterface
 {
@@ -192,8 +193,12 @@ DOC;
     /**
      * @return void
     */
-    public function build()
+    public function build($env = PackageManager::LOCAL_ENV)
     {
+        $manifest = $this->getManifest();
+        $manifest->setEnv($env);
+        $manifest->reload();
+
         file_put_contents($this->getRoutesDumpFilename(), $this->generateRoutes());
     }
 }

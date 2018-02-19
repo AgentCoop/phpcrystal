@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\Physical\Support\Logging\MongoDB;
+namespace PhpCrystal\Core\Models\Physical\Support\Logging\MongoDB;
 
-use App\Models\Logical\Support\Logging\ErrorEntry as ErrorEntryLogical;
-use App\Models\Physical\DAL\AbstractMongoDb;
+use PhpCrystal\Core\Models\Logical\Support\Logging\ErrorEntry as ErrorEntryLogical;
+use PhpCrystal\Core\Models\Physical\DAL\AbstractMongoDb;
 
 use Carbon\Carbon;
 
@@ -14,7 +14,7 @@ class ErrorEntry extends AbstractMongoDb
     protected $collection = 'logs.errors';
 
     /**
-     * @return \App\Models\Physical\Support\Logging\MongoDB\ErrorEntry[]
+     * @return \PhpCrystal\Core\Models\Physical\Support\Logging\MongoDB\ErrorEntry[]
     */
     public static function getLast($limit = 10)
     {
@@ -26,7 +26,7 @@ class ErrorEntry extends AbstractMongoDb
     }
 
     /**
-     * @return \App\Models\Physical\Support\Logging\MongoDB\ErrorEntry[]
+     * @return \PhpCrystal\Core\Models\Physical\Support\Logging\MongoDB\ErrorEntry[]
     */
     public static function getBefore(Carbon $datetime)
     {

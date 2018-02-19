@@ -2,7 +2,7 @@
 
 namespace Tests\Fixture;
 
-use PhpCrystal\Core\Services\View\AbstractView;
+use PhpCrystal\Core\Component\Mvc\AbstractView;
 
 class TestView extends AbstractView
 {

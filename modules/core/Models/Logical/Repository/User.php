@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Logical\Repository;
+namespace PhpCrystal\Core\Models\Logical\Repository;
 
 trait User
 {

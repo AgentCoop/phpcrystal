@@ -1,9 +1,9 @@
 <?php
 namespace PhpCrystal\Core\Services\Package\Module;
 
-use PhpCrystal\Core\Services\Base\AbstractContainer;
+use PhpCrystal\Core\Services\Package\Config;
 
-class Manifest extends AbstractContainer
+class Manifest extends Config
 {
     /**
      * @return string|null

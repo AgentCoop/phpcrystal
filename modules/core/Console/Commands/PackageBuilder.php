@@ -28,12 +28,19 @@ class PackageBuilder extends AbstractCommand
     public function handle(PackageManager $packageManager)
     {
         $moduleName = $this->option('module');
+        $prodEnv = $this->option('production');
+
+        if ($prodEnv) {
+            $env = PackageManager::PRODUCTION_ENV;
+        } else {
+            $env = PackageManager::LOCAL_ENV;
+        }
 
         if ( ! empty($moduleName)) {
             $module = $packageManager->getModuleByName($moduleName);
-            $module->build();
+            $module->build($env);
         } else {
-            $packageManager->build();
+            $packageManager->build($env);
         }
     }
 }

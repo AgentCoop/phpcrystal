@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpCrystal\Core\Component;
+namespace PhpCrystal\Core\Component\Mvc;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;

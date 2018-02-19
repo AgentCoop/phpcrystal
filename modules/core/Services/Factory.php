@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Services;
+namespace PhpCrystal\Core\Services;
 
 use Illuminate\Support\Facades\Config;
 
-use App\Models\Physical\Support\Logging\MongoDB\ErrorEntry as ErrorEntryMongoDb;
-use App\Models\Physical\Support\Logging\MySQL\ErrorEntry as ErrorEntryMySql;
+use PhpCrystal\Core\Models\Physical\Support\Logging\MongoDB\ErrorEntry as ErrorEntryMongoDb;
+use PhpCrystal\Core\Models\Physical\Support\Logging\MySQL\ErrorEntry as ErrorEntryMySql;
 
-abstract class AbstractSupport
+class Factory
 {
     const MYSQL_CONN_NAME = 'mysql';
     const MONGODB_CONN_NAME = 'mongodb';
 
     /**
      * @return string
-    */
+     */
     final protected static function getDefaultConnName()
     {
         return Config::get('database.default');

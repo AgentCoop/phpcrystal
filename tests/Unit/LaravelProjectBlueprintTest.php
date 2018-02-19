@@ -2,18 +2,18 @@
 
 namespace Tests\Unit;
 
-use App\Services\Support\Filesystem\Scanner;
+use PhpCrystal\Core\Services\Filesystem\Finder;
 
 use PhpCrystal\Core\Services\Package\Manager as PackageManager;
 
 use Tests\TestCase;
 use Tests\Fixture as Fixture;
 
-use App\Services\Support\Module\Manifest as ModuleManifest;
+use PhpCrystal\Core\Services\Package\Module\Manifest as ModuleManifest;
 
-use App\Exceptions\Loggable;
-use App\Models\Physical\Support\Logging\MongoDB\ErrorEntry;
-use App\Models\Physical\Repository\User;
+use PhpCrystal\Core\Component\Exception\Loggable;
+use PhpCrystal\Core\Models\Physical\Support\Logging\MongoDB\ErrorEntry;
+use PhpCrystal\Core\Models\Physical\Repository\User;
 
 class LaravelProjectBlueprintTest extends TestCase
 {
@@ -114,7 +114,7 @@ class LaravelProjectBlueprintTest extends TestCase
      */
     public function testScanner()
     {
-        Scanner::findByFilename(base_path().'/tests/Fixture', 'manifest.php', function($realpath) {
+        Finder::findByFilename(base_path().'/tests/Fixture', 'manifest.php', function($realpath) {
             $this->assertEquals(base_path().'/tests/Fixture/manifest.php', $realpath);
         })->run();
     }
@@ -125,7 +125,7 @@ class LaravelProjectBlueprintTest extends TestCase
     public function testPackageManager()
     {
         $manager = new PackageManager();
-        $manager->run();
+        $manager->build();
 
         //$this->assertEquals(1, count($manager->getModules()));
 
