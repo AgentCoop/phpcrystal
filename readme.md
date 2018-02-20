@@ -6,7 +6,7 @@ PhpCrystal is an extension of the popular PHP framework Laravel shipped with a m
 ## Installation
 Create a new project:
 ```bash
-composer create-project agentcoop/laravel-project-blueprint
+composer create-project agentcoop/phpcrystal
 ```
 Build Docker images:
 ```bash
@@ -26,5 +26,5 @@ Licensed under the [MIT license](https://opensource.org/licenses/MIT).
     2. [jQuery DataTables plugin](docs/jquery-datatables.md)
 3. [Controller](docs/controller.md)
 4. Modules
-    1. [Overview]((docs/modules.md))
+    1. [Overview](docs/modules.md)
     2. [Annotated routing](docs/annotated-routing.md)
