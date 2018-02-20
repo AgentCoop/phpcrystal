@@ -16,7 +16,7 @@ server {
     location ~ [^/]\.php(/|$) {
         fastcgi_param SCRIPT_FILENAME   $web_root/index.php;
         include                         fastcgi_params;
-        fastcgi_pass                    phpcrystal-php:9000;
+        fastcgi_pass                    %project-name%-php:9000;
         fastcgi_split_path_info         ^(.+?\.php)(/.*)$;
         fastcgi_index                   index.php;
     }

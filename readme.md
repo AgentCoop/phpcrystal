@@ -6,13 +6,18 @@ PhpCrystal is an extension of the popular PHP framework Laravel shipped with a m
 ## Installation
 Create a new project:
 ```bash
-composer create-project agentcoop/phpcrystal
+composer create-project --no-install agentcoop/phpcrystal
 ```
 Build Docker images:
 ```bash
 docker-compose up --build
 ```
-Go to http://localhost:6000 and, if everything is good, you'll see the Laravel welcome page.
+Go to http://localhost:60000 and, if everything is good, you'll see the Laravel welcome page.
+
+## Version compatibility
+| Laravel | Package |
+|---------|---------|
+| 5.5.34  | 1.0.x   |
 
 ## License
 Licensed under the [MIT license](https://opensource.org/licenses/MIT).

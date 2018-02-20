@@ -52,7 +52,7 @@
             "if [[ ! -f .env ]]; then cp -f .env.example .env; @php artisan key:generate; fi"
         ],
         "post-create-project-cmd": [
-            "cp -f docker-compose.yml.example docker-compose.yml && sed -i \"s/%project-name%/$(basename $(pwd))/g\" docker-compose.yml"
+            "export NGINX_CONF_DIR=./config/docker/nginx/dev/sites-enabled/; cp -f docker-compose.yml.example docker-compose.yml; mv $NGINX_CONF_DIR/app.conf.tpl $NGINX_CONF_DIR/app.conf; sed -i \"s/%project-name%/$(basename $(pwd))/g\" ./docker-compose.yml $NGINX_CONF_DIR/app.conf"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
