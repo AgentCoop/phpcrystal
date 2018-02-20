@@ -1,36 +1,36 @@
 version: '2'
 services:
-  lpb-php:
+  phpcrystal-php:
     build: .
-    container_name: "php.laravel-project-blueprint"
+    container_name: "php.phpcrystal"
     volumes:
       - .:/var/www/html
       - ./vendor:/var/www/html/vendor
     environment:
-      - XDEBUG_CONFIG='idekey=xdebug; xdebug.remote_host=192.168.0.121'
-      - MONGODB_HOST=lpb-mongodb
+      - XDEBUG_CONFIG='idekey=xdebug; xdebug.remote_host=192.168.0.115'
+      - MONGODB_HOST=phpcrystal-mongodb
 
-  lpb-nginx:
+  phpcrystal-nginx:
     build: ./config/docker/nginx/dev
-    container_name: "nginx.laravel-project-blueprint"
+    container_name: "nginx.phpcrystal"
     ports:
-      - 6000:80
+      - 60000:80
     volumes_from:
-      - lpb-php:ro
+      - phpcrystal-php:ro
 
-  lpb-mongodb:
+  phpcrystal-mongodb:
     image: mongo:3.4.1
-    container_name: "mongodb.laravel-project-blueprint"
+    container_name: "mongodb.phpcrystal"
     volumes_from:
-      - lpb-mongodb-data
+      - phpcrystal-mongodb-data
 
-  lpb-mongodb-data:
+  phpcrystal-mongodb-data:
     image: alpine
-    container_name: "data.mongodb.laravel-project-blueprint"
+    container_name: "data.mongodb.phpcrystal"
     volumes:
       - /data/db
     command: "true"
 
-  lpb-redis:
+  phpcrystal-redis:
     image: redis:3.2.7-alpine
-    container_name: "redis.laravel-project-blueprint"
+    container_name: "redis.phpcrystal"

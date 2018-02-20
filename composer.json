@@ -49,10 +49,10 @@
     },
     "scripts": {
         "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+            "if [[ ! -f .env ]]; then cp -f .env.example .env; @php artisan key:generate; fi"
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate"
+            "cp -f docker-compose.yml.example docker-compose.yml && sed -i \"s/%project-name%/$(basename $(pwd))/g\" docker-compose.yml"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
