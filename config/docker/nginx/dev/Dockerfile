@@ -1,10 +1,10 @@
 FROM nginx:1.13.1
 
-COPY ./sites-enabled/app.conf /etc/nginx/conf.d/lpb.com.conf
+COPY ./sites-enabled/app.conf /etc/nginx/conf.d/
 COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY ./self-signed-key/server.key /etc/ssl/certs/lpb.key
-COPY ./self-signed-key/server.crt /etc/ssl/certs/lpb.crt
+COPY ./self-signed-key/server.key /etc/ssl/certs/
+COPY ./self-signed-key/server.crt /etc/ssl/certs/
 COPY ./dhparam.pem /etc/ssl/certs/dhparam.pem
 COPY ./ssl-params.conf /etc/nginx/
 

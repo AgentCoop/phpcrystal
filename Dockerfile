@@ -67,7 +67,8 @@ RUN set -xe \
 
 RUN set -xe \
     && cd /var/www/html \
-    && composer install --no-progress
+    && composer install --no-progress \
+    && php artisan package:build
 
 # Set container entrypoint
 COPY ./config/docker/php/dev/entrypoint.sh /
