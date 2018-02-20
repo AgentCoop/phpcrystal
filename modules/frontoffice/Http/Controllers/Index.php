@@ -4,7 +4,7 @@ namespace App\Frontoffice\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use PhpCrystal\Core\Component\Mvc\AbstractController;
+use App\Component\Mvc\AbstractController;
 
 use App\Frontoffice\Services\View as ViewService;
 

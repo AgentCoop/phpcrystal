@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use PhpCrystal\Core\Services\Package\Manager as PackageManager;
+use App\Services\Package\Manager as PackageManager;
 
 class AppServiceProvider extends ServiceProvider
 {

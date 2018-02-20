@@ -2,18 +2,18 @@
 
 namespace Tests\Unit;
 
-use PhpCrystal\Core\Services\Filesystem\Finder;
+use App\Services\Filesystem\Finder;
 
-use PhpCrystal\Core\Services\Package\Manager as PackageManager;
+use App\Services\Package\Manager as PackageManager;
 
 use Tests\TestCase;
 use Tests\Fixture as Fixture;
 
-use PhpCrystal\Core\Services\Package\Module\Manifest as ModuleManifest;
+use App\Services\Package\Module\Manifest as ModuleManifest;
 
-use PhpCrystal\Core\Component\Exception\Loggable;
-use PhpCrystal\Core\Models\Physical\Support\Logging\MongoDB\ErrorEntry;
-use PhpCrystal\Core\Models\Physical\Repository\User;
+use App\Component\Exception\Loggable;
+use App\Models\Physical\Support\Logging\MongoDB\ErrorEntry;
+use App\Models\Physical\Repository\User;
 
 class LaravelProjectBlueprintTest extends TestCase
 {

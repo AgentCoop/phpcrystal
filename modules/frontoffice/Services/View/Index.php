@@ -2,7 +2,7 @@
 
 namespace App\Frontoffice\Services\View;
 
-use PhpCrystal\Core\Component\Mvc\AbstractView;
+use App\Component\Mvc\AbstractView;
 
 class Index extends AbstractView
 {

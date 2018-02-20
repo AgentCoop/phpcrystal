@@ -1,6 +1,6 @@
 <?php
 
-use PhpCrystal\Core\Services\Package\Manager as PackageManager;
+use App\Services\Package\Manager as PackageManager;
 
 $this->set('router.prefix', '/');
 $this->set('router.middlewares', ['web']);

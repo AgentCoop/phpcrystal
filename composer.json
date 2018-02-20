@@ -28,7 +28,6 @@
             "App\\": "app/",
             "App\\Frontoffice\\": "modules/frontoffice/",
             "App\\Backoffice\\": "modules/backoffice/",
-            "PhpCrystal\\Core\\": "modules/core/",
             "App\\Api\\": "modules/api/"
         }
     },
