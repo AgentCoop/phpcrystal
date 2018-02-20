@@ -4,6 +4,8 @@
     "keywords": ["framework", "laravel", "phpcrystal"],
     "license": "MIT",
     "type": "project",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">=7.1.3",
         "doctrine/annotations": "^1.6",

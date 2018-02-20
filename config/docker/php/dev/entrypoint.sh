@@ -6,7 +6,7 @@
 # Logger, max log file size 500Kb
 /sbin/syslogd -D -s 500
 
-supervisord
+/usr/bin/supervisord -c /etc/supervisord.conf
 
 # Create a symlink to the public storage directory
 ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
@@ -15,5 +15,7 @@ ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
 chgrp -R www-data /var/www/html
 chmod -R g+rw /var/www/html
 
-# Run PHP-FPM
+php /var/www/html/artisan package:build
+
+# Run PHP-FPM in foreground
 php-fpm -F

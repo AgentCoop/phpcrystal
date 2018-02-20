@@ -69,10 +69,9 @@ RUN set -xe \
     && cd /var/www/html \
     && composer install --no-progress
 
-# Entrypoint
-COPY ./config/docker/php/dev/php-fpm.sh /php-fpm.sh
-RUN chmod +x /php-fpm.sh
-CMD ["/php-fpm.sh"]
-
+# Set container entrypoint
+COPY ./config/docker/php/dev/entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+CMD ["/entrypoint.sh"]
 
 VOLUME ["/var/www"]
