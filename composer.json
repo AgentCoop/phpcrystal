@@ -1,7 +1,7 @@
 {
-    "name": "agentcoop/laravel-project-blueprint",
-    "description": "Boilerplate code for projects based on Laravel PHP framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "agentcoop/phpcrystal",
+    "description": "An extension of the Laravel PHP framework.",
+    "keywords": ["framework", "laravel", "phpcrystal"],
     "license": "MIT",
     "type": "project",
     "require": {

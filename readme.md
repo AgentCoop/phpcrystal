@@ -25,4 +25,6 @@ Licensed under the [MIT license](https://opensource.org/licenses/MIT).
     1. [Blade templates compiling](docs/blade-compiling.md)
     2. [jQuery DataTables plugin](docs/jquery-datatables.md)
 3. [Controller](docs/controller.md)
-4. [Annotated routing](docs/routing.md)
+4. Modules
+    1. [Overview]((docs/modules.md))
+    2. [Annotated routing](docs/annotated-routing.md)

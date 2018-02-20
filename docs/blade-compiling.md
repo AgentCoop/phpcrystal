@@ -12,7 +12,7 @@ The method for doing that is *AbstractView::renderBladeMarkup($tpl, $data)*
 
 namespace Tests\Fixture;
 
-use App\Services\View\AbstractView;
+use App\Component\Mvc\AbstractView;
 
 class TestView extends AbstractView
 {
