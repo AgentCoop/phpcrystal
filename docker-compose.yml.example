@@ -16,13 +16,13 @@ services:
     ports:
       - 60000:80
     volumes_from:
-      - lpb-php:ro
+      - %project-name%-php:ro
 
   %project-name%-mongodb:
     image: mongo:3.4.1
     container_name: "mongodb.%project-name%"
     volumes_from:
-      - lpb-mongodb-data
+      - %project-name%-mongodb-data
 
   %project-name%-mongodb-data:
     image: alpine
