@@ -14,7 +14,7 @@ services:
     build: ./config/docker/nginx/dev
     container_name: "nginx.laravel-project-blueprint"
     ports:
-      - 60000:80
+      - 6000:80
     volumes_from:
       - lpb-php:ro
 
