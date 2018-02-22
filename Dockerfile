@@ -63,10 +63,7 @@ ADD . /var/www/html
 
 RUN set -xe \
     && cd /var/www/html \
-    && yarn install
-
-RUN set -xe \
-    && cd /var/www/html \
+    && yarn install \
     && composer install --no-progress
 
 # Set container entrypoint

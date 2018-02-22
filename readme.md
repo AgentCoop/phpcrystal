@@ -16,10 +16,10 @@ docker-compose up --build
 Go to http://localhost:60000 and, if everything is good, you'll see the Laravel welcome page.
 
 ## Default application stack
- - MongoDb 3.4.1
- - Nginx 1.13.1
- - PHP 7.2.1
- - Linux Alpine 3.7
+ - MongoDb (*3.4.1v*)
+ - Nginx (*1.13.1v*)
+ - PHP (*7.2.1v*)
+ - Linux Alpine (*3.7v*)
 
 ## Version compatibility
 | Laravel | Package |
