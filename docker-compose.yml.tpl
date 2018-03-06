@@ -5,6 +5,7 @@ services:
     container_name: "php.%project-name%"
     volumes:
       - .:/var/www/html
+      - ./vendor:/var/www/html/vendor
     environment:
       - XDEBUG_CONFIG='idekey=xdebug; xdebug.remote_host=<your_ip_address>'
       - MONGODB_HOST=%project-name%-mongodb
