@@ -24,7 +24,7 @@ Go to http://localhost:60000 and, if everything is good, you'll see the Laravel 
 ## Version compatibility
 | Laravel | Package |
 |---------|---------|
-| 5.5.34  | 1.0.x   |
+| 5.6.*   | 1.0.x   |
 
 ## License
 Licensed under the [MIT license](https://opensource.org/licenses/MIT).
