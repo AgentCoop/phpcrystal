@@ -66,6 +66,8 @@ RUN set -xe \
     && yarn install \
     && composer install --no-progress
 
+ADD ./vendor /var/www/html/vendor
+
 # Set container entrypoint
 COPY ./config/docker/php/dev/entrypoint.sh /
 RUN chmod +x /entrypoint.sh
