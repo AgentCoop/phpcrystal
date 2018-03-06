@@ -53,7 +53,7 @@
             "if [[ ! -f .env ]]; then cp -f .env.example .env; @php artisan key:generate; fi"
         ],
         "post-create-project-cmd": [
-            "./scripts/composer/post-create-project-cmd"
+            "./scripts/composer/post-create-project-cmd.sh"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
