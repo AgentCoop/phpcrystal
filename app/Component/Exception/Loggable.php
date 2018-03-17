@@ -57,8 +57,8 @@ class Loggable extends AbstractException
     final public function save()
     {
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        $funcName  = @$backtrace[1]['function'];
-        $className = @$backtrace[1]['class'];
+        $funcName  = isset($backtrace[2]['function']) ? $backtrace[2]['function'] : 'Unknown';
+        $className  = isset($backtrace[2]['class']) ? $backtrace[2]['class'] : 'Unknown';
 
         $logEntry = Factory::logEntryFactory();
         $logEntry
@@ -69,6 +69,16 @@ class Loggable extends AbstractException
             ->setCode($this->getCode())
             ->setMessage($this->getMessage())
         ;
+
+        $prevException = $this->getPrevious();
+
+        if ($prevException) {
+            $logEntry->setFile($prevException->getFile());
+            $logEntry->setLine($prevException->getLine());
+        } else {
+            $logEntry->getFile($this->getFile());
+            $logEntry->setLine($this->getLine());
+        }
 
         if (php_sapi_name() == "cli") {
             $logEntry

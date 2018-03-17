@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Support;
 
 use App\Services\Package\Manager as PackageManager;
+
+use App\Console\Commands\AbstractCommand;
 
 class PackageBuilder extends AbstractCommand
 {

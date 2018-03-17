@@ -36,6 +36,14 @@ abstract class AbstractException extends \Exception
     }
 
     /**
+     * @return $this
+     */
+    public static function createFromException(\Exception $e)
+    {
+        return new static($e->getMessage(), $e->getCode(), $e);
+    }
+
+    /**
      *
      */
     abstract public function _throw();

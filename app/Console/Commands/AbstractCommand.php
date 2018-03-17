@@ -7,6 +7,11 @@ use Carbon\Carbon;
 
 abstract class AbstractCommand extends Command
 {
+    const DATETIME_LABEL_START_OF_DAY = 'start-of-day';
+    const DATETIME_LABEL_START_OF_WEEK = 'start-of-week';
+    const DATETIME_LABEL_START_OF_MONTH = 'start-of-month';
+    const DATETIME_LABEL_START_OF_YEAR = 'start-of-year';
+
     /**
      * @return void
      */
@@ -37,23 +42,23 @@ abstract class AbstractCommand extends Command
 
     /**
      *
-    */
-    protected function parseTimeOption($name)
+     */
+    protected function parseDateTimeOptionValue($name)
     {
         $now = Carbon::parse();
 
         switch ($this->option($name)) {
-            case 'last-day':
-                return $now->subDay(1);
+            case self::DATETIME_LABEL_START_OF_DAY:
+                return $now->startOfDay();
 
-            case 'last-week':
-                return $now->subWeek(1);
+            case self::DATETIME_LABEL_START_OF_WEEK:
+                return $now->startOfWeek();
 
-            case 'last-month':
-                return $now->subMonth(1);
+            case self::DATETIME_LABEL_START_OF_MONTH:
+                return $now->startOfMonth();
 
-            case 'last-year':
-                return $now->subYear(1);
+            case self::DATETIME_LABEL_START_OF_YEAR:
+                return $now->startOfYear();
 
             default:
                 return null;
