@@ -12,6 +12,7 @@ services:
         source: ./
         target: /var/www/html
       - /var/www/html/vendor
+      - /var/www/html/node_modules
     environment:
       - XDEBUG_CONFIG='idekey=xdebug; xdebug.remote_host=<your IP address>'
       - MONGODB_HOST=%project-name%-mongodb

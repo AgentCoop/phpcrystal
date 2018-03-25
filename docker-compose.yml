@@ -12,6 +12,7 @@ services:
         source: ./
         target: /var/www/html
       - /var/www/html/vendor
+      - /var/www/html/node_modules
     environment:
       - XDEBUG_CONFIG='idekey=xdebug; xdebug.remote_host=192.168.0.115'
       - MONGODB_HOST=phpcrystal-mongodb
