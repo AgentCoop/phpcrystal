@@ -11,7 +11,7 @@ services:
       - type: bind
         source: ./
         target: /var/www/html
-      - "./vendor:/var/www/html/vendor"
+      - /var/www/html/vendor
     environment:
       - XDEBUG_CONFIG='idekey=xdebug; xdebug.remote_host=<your IP address>'
       - MONGODB_HOST=%project-name%-mongodb
