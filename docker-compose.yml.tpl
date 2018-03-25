@@ -1,7 +1,7 @@
 version: '3.2'
 
 volumes:
-  mongodb-data:
+  %project-name%-mongodb-data:
 
 services:
   %project-name%-php:
@@ -11,6 +11,7 @@ services:
       - type: bind
         source: ./
         target: /var/www/html
+      - "./vendor:/var/www/html/vendor"
     environment:
       - XDEBUG_CONFIG='idekey=xdebug; xdebug.remote_host=<your IP address>'
       - MONGODB_HOST=%project-name%-mongodb
@@ -29,14 +30,14 @@ services:
     image: mongo:3.4.1
     container_name: "mongodb.%project-name%"
     volumes:
-      - mongodb-data:/data/db
+      - %project-name%-mongodb-data:/data/db
 
   %project-name%-mongodb-data:
     image: alpine
     container_name: "data.mongodb.%project-name%"
     volumes:
       - type: volume
-        source: mongodb-data
+        source: %project-name%-mongodb-data
         target: /data/db
     command: "true"
 
