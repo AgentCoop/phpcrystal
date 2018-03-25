@@ -71,4 +71,4 @@ COPY ./config/docker/php/dev/entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 CMD ["/entrypoint.sh"]
 
-VOLUME ["/var/www"]
+VOLUME /var/www

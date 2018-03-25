@@ -1,13 +1,18 @@
-version: '2'
+version: '3.2'
+
+volumes:
+  mongodb-data:
+
 services:
   %project-name%-php:
     build: .
     container_name: "php.%project-name%"
     volumes:
-      - .:/var/www/html
-      - /var/www/html/vendor
+      - type: bind
+        source: ./
+        target: /var/www/html
     environment:
-      - XDEBUG_CONFIG='idekey=xdebug; xdebug.remote_host=<your_ip_address>'
+      - XDEBUG_CONFIG='idekey=xdebug; xdebug.remote_host=<your IP address>'
       - MONGODB_HOST=%project-name%-mongodb
 
   %project-name%-nginx:
@@ -15,22 +20,27 @@ services:
     container_name: "nginx.%project-name%"
     ports:
       - 60000:80
-    volumes_from:
-      - %project-name%-php:ro
+    volumes:
+      - type: bind
+        source: ./
+        target: /var/www/html
 
   %project-name%-mongodb:
     image: mongo:3.4.1
     container_name: "mongodb.%project-name%"
-    volumes_from:
-      - %project-name%-mongodb-data
+    volumes:
+      - mongodb-data:/data/db
 
   %project-name%-mongodb-data:
     image: alpine
     container_name: "data.mongodb.%project-name%"
     volumes:
-      - /data/db
+      - type: volume
+        source: mongodb-data
+        target: /data/db
     command: "true"
 
   %project-name%-redis:
     image: redis:3.2.7-alpine
     container_name: "redis.%project-name%"
+
