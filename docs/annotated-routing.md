@@ -6,10 +6,10 @@ A module controller supports the annotated routing mechanism that works out of t
 namespace App\Frontoffice\Http\Controllers;
  
 use Illuminate\Http\Request;
-use App\Component\Mvc\AbstractController;
+use App\Component\Mvc\Controller\AbstractView as Controller;
 use App\Frontoffice\Services\View as ViewService;
  
-class UserProfile extends AbstractController
+class UserProfile extends Controller
 {
     /**
      * @Route("/profile/edit/{userId}", methods={"post"}, name="edit_user_profile", requirements={"userId": "\d+"}))
