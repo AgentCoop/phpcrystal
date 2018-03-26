@@ -9,22 +9,15 @@ use Illuminate\Http\Request;
 use App\Component\Mvc\AbstractController;
 use App\Frontoffice\Services\View as ViewService;
  
-class Index extends AbstractController
+class UserProfile extends AbstractController
 {
     /**
-     * @Route("/", name="index")
+     * @Route("/profile/edit/{userId}", methods={"post"}, name="edit_user_profile", requirements={"userId": "\d+"}))
      */
-    public function indexPage(Request $request)
+    public function editAction(Request $request, $userId)
     {
         try {
-            $data = [];
-
-            $data = array_merge(
-                ViewService\Index::create()->getData(),
-                $data
-            );
-
-            return $this->i18View('frontend.pages.welcome', $data);
+            // ...
         } catch (\Exception $e) {
             return $this->handleException($e);
         }

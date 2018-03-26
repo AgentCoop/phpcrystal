@@ -2,33 +2,9 @@
 
 namespace Lpb\Core\Services\Package\Module;
 
-use App\Services\Support\Filesystem\Scanner;
-use App\Services\Support\Module\Manifest;
-use App\Services\Support\Module\Module;
-
 class Manager
 {
     private $modules = [];
-
-    /**
-     *
-    */
-    private function scanModules()
-    {
-        Scanner::findByFilename(base_path() . '/modules', 'manifest.php', function($manifest) {
-            $this->modules[] = new Module(Manifest::createFromFile($manifest), dirname($manifest));
-        })
-            ->setMaxDepth(1)
-            ->run();
-    }
-
-    /**
-     *
-    */
-    public function run()
-    {
-        $this->scanModules();
-    }
 
     /**
      * @return array

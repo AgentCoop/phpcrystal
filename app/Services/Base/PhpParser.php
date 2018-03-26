@@ -8,13 +8,19 @@ class PhpParser extends TokenParser
     /**
      * @return string
      */
-    public static function toPhpArray($elements)
+    public static function toPhpArray($elements, $withKeys = false)
     {
         $phpArray = '[';
 
-        array_map(function($el) use(&$phpArray) {
-            $phpArray .= (is_string($el) ? ('\'' . $el . '\'') : $el) . ',';
-        }, $elements);
+        foreach ($elements as $key => $value) {
+            if (is_array($value)) {
+                $phpArray .= self::toPhpArray($value, $withKeys);
+            } else {
+                $phpArray .= (($withKeys  ? '\'' . $key . '\'' . ' => ' : '') . '\'' . $value . '\'');
+            }
+
+            $phpArray .= ',';
+        }
 
         $phpArray = rtrim($phpArray, ',');
         $phpArray .= ']';

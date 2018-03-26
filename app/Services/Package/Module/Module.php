@@ -142,6 +142,8 @@ DOC;
 
             if ( empty($methods = $route->getMethods())) {
                 $methods = ['get'];
+            } else {
+                $methods = array_map('strtolower', $methods);
             }
 
             $record .= sprintf("match(%s, '%s', ['as' => '%s', 'uses' => '%s@%s'])",
@@ -157,6 +159,13 @@ DOC;
                 $middlewareNames = array_map(function($annot) { return $annot->getCommonName(); }, $middlewareAnnots);
 
                 $record .= sprintf('->middleware(%s)', PhpParser::toPhpArray($middlewareNames));
+            }
+
+            // Routing params constraints
+            $requirements = $annot->getRequirements();
+
+            if ( ! empty($requirements)) {
+                $record .= sprintf('->where(%s)', PhpParser::toPhpArray($requirements, true));
             }
 
             $record .= ';';
