@@ -4,11 +4,11 @@ namespace App\Frontoffice\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Component\Mvc\AbstractController;
+use App\Component\Mvc\Controller\AbstractView as Controller;
 
 use App\Frontoffice\Services\View as ViewService;
 
-class Index extends AbstractController
+class Index extends Controller
 {
     /**
      * @Route("/", name="index")
