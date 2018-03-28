@@ -27,5 +27,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PackageManager::class, function($app) {
             return new PackageManager();
         });
+
+        // Load service providers
+        $filename = storage_path(PackageManager::SERVICE_PROVIDERS_DUMP_FILENAME);
+
+        if (file_exists($filename)) {
+            require $filename;
+        }
     }
 }

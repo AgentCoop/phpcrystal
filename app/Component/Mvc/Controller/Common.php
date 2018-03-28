@@ -4,7 +4,7 @@ namespace App\Component\Mvc\Controller;
 
 use App\Component\Exception\Loggable;
 
-trait CommonTrait
+trait Common
 {
     /**
      *

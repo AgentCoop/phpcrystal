@@ -11,7 +11,7 @@ class AbstractView extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    use CommonTrait;
+    use Common;
 
     /**
      *

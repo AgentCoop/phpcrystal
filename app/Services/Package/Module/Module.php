@@ -1,19 +1,23 @@
 <?php
 namespace App\Services\Package\Module;
 
+use Faker\Provider\File;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Routing\Loader\AnnotationClassLoader;
 use Symfony\Component\Routing\Loader\AnnotationDirectoryLoader;
 use Symfony\Component\Routing\Route;
 
-use App\Services\Filesystem\Finder;
+use App\Component\Mvc\Controller\AbstractService;
+
+use App\Services\Filesystem as Filesystem;
 use App\Services\Base\PhpParser;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 
-use App\Services\Package\Annotation\Route as AnnotationRoute;
-use App\Services\Package\Annotation\Middleware as AnnotationMiddleware;
+use App\Services\Package\Annotation as Annotation;
 use App\Services\Package\Manager as PackageManager;
+use App\Services\Factory;
+
 
 class Locator implements FileLocatorInterface
 {
@@ -40,6 +44,84 @@ class Module extends AnnotationClassLoader
     /** @var array */
     private $middlewareMap = [];
 
+    /** @var array */
+    private $servicesMap = [];
+
+    /** @var array */
+    private static $taggedServices = [];
+
+    /**
+     *
+    */
+    public static function generateTaggedServices() : string
+    {
+        $content = '';
+
+        foreach (self::$taggedServices as $tagName => $serviceClassNames) {
+            $content .= sprintf("\$this->app->tag(%s, '%s');\n",
+                PhpParser::toPhpArray($serviceClassNames), $tagName);
+        }
+
+        return $content;
+    }
+
+    /**
+     * @return string
+    */
+    private function generateServiceProviders()
+    {
+        $content = '';
+
+        foreach ($this->servicesMap as $className => $annot) {
+            /** @var Annotation\Service $annot */
+            $type  = $annot->getValue();
+            $callName = AbstractService::TYPES_CONTAINER_CALLS_MAP[$type];
+            $serviceTag = $annot->getTag();
+
+            if ($serviceTag) {
+                if ( ! isset(self::$taggedServices[$serviceTag])) {
+                    self::$taggedServices[$serviceTag] = [];
+                }
+
+                self::$taggedServices[$serviceTag][] = $className;
+            }
+
+            // Bind interfaces implemented by the class
+            $implements = class_implements($className);
+
+            foreach ($implements as $interfaceName) {
+                $record = sprintf("\$this->app->bind('%s', '%s');\n",
+                    $interfaceName, $className);
+
+                $content .= $record;
+            }
+
+            $dependencies = Factory::getMethodInjectedServices($className, '__construct');
+            $appMakeCalls = [];
+
+            foreach ($dependencies as $item) {
+                $appMakeCalls[] = sprintf('$app->make(%s::class)',
+                    PhpParser::toFQCN($item['className']));
+            }
+
+            $record = sprintf("\$this->app->%s(%s::class, function(\$app) { return (new %s(%s))->setModuleName('%s'); });\n",
+                $callName, $className, $className, join(',', $appMakeCalls), $this->getName());
+
+            $content .= $record;
+        }
+
+        return $content;
+    }
+
+    /**
+     *
+    */
+    private function dumpServiceProviders() : void
+    {
+        $content = $this->generateServiceProviders();
+        Filesystem\Aux::append(storage_path(PackageManager::SERVICE_PROVIDERS_DUMP_FILENAME), $content);
+    }
+
     /**
      * @return void
     */
@@ -62,25 +144,42 @@ class Module extends AnnotationClassLoader
     /**
      *
     */
-    public function __construct(Manifest $manifest, $basedir)
+    public function __construct(Manifest $manifest, $basedir, $name = null)
     {
         $this->manifest = $manifest;
         $this->basedir = $basedir;
 
-        $parts = explode(DIRECTORY_SEPARATOR, $basedir);
-        $this->name = strtolower(array_pop($parts));
+        if (is_null($name)) {
+            $parts = explode(DIRECTORY_SEPARATOR, $basedir);
+            $this->name = strtolower(array_pop($parts));
+        } else {
+            $this->name = $name;
+        }
 
         $reader = $this->createAnnotationReader();
 
         // Before parsing, all annotation classes must be loaded
-        class_exists(AnnotationRoute::class, true);
-        class_exists(AnnotationMiddleware::class, true);
+        class_exists(Annotation\Route::class, true);
+        class_exists(Annotation\Middleware::class, true);
+        class_exists(Annotation\Service::class, true);
 
         parent::__construct($reader);
 
-        $controllersBaseDir = $basedir . '/Http/Controllers/';
+        $controllersBaseDir = $basedir . join(DIRECTORY_SEPARATOR, ['', 'Http', 'Controllers']);
+        $servicesBaseDir = $basedir . join(DIRECTORY_SEPARATOR, ['', 'Services']);
 
-        Finder::findPhpFiles($controllersBaseDir, function($filename) use($reader) {
+        $dirs = [];
+
+        // The core module does not have controllers
+        if ($this->getName() != PackageManager::CORE_MODULE_NAME) {
+            $dirs[] = $controllersBaseDir;
+        }
+
+        if (file_exists($servicesBaseDir)) {
+            $dirs[] = $servicesBaseDir;
+        }
+
+        Filesystem\Finder::findPhpFiles($dirs, function($filename) use($reader) {
             $parser = PhpParser::loadFromFile($filename);
 
             if ( ! ($className = $parser->extractClassName())) {
@@ -90,13 +189,28 @@ class Module extends AnnotationClassLoader
             $reflectionClass = new \ReflectionClass($className);
             $annots = $reader->getClassAnnotations($reflectionClass);
 
+            // Any AbstractService subclass must have a corresponding annotation
+            if (empty($annots) && is_subclass_of($className, AbstractService::class)) {
+                throw new \RuntimeException(sprintf('Missing service annotation for %s',
+                    $className));
+            }
+
             foreach ($annots as $annot) {
-                if ($annot instanceof AnnotationMiddleware) {
+                if ($annot instanceof Annotation\Middleware) {
                     if ( ! isset($this->middlewareMap[$className])) {
                         $this->middlewareMap[$className] = [];
                     }
 
                     $this->middlewareMap[$className][] = $annot;
+                } else if ($annot instanceof  Annotation\Service &&
+                    is_subclass_of($className, AbstractService::class))
+                {
+                    if ( ! in_array($annot->getValue(), AbstractService::TYPES)) {
+                        throw new \RuntimeException(sprintf('Invalid service type specified "%s"',
+                            $this->getValue()));
+                    }
+
+                    $this->servicesMap[$className] = $annot;
                 }
             }
         })
@@ -194,9 +308,19 @@ DOC;
     /**
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setName($name) : self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     /**
@@ -209,6 +333,8 @@ DOC;
         $manifest
             ->setEnv($env)
             ->reload();
+
+        $this->dumpServiceProviders();
 
         file_put_contents($this->getRoutesDumpFilename(), $this->generateRoutes());
     }

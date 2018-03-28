@@ -7,8 +7,15 @@ use App;
 
 use Illuminate\Support\Facades\Mail;
 
-class Mailer
+use App\Component\Mvc\Controller\AbstractService;
+
+/**
+ * @Service("singleton", tag="mailer")
+*/
+class Mailer extends AbstractService
 {
+    const ERR_REPORT_TEMPLATE_VARNAME = 'email_error_report';
+
     private $attachmentsToRemove = [];
 
     /**
@@ -30,7 +37,9 @@ class Mailer
         $data['errCode'] = $errorCode;
         $data['errMessage'] = $errorMessage;
 
-        Mail::send('email.support.error_report', $data, function ($mail) use($recipient) {
+        $config = $this->getConfig();
+
+        Mail::send($config->get(self::ERR_REPORT_TEMPLATE_VARNAME), $data, function ($mail) use($recipient) {
             $subject = sprintf('Error report for %s', env('APP_NAME'));
             $mail
                 ->from(sprintf('no-reply@%s', env('COMPANY_DOMAIN')), env('COMPANY_NAME'))

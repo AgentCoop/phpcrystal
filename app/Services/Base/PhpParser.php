@@ -6,6 +6,14 @@ use Doctrine\Common\Annotations\TokenParser;
 class PhpParser extends TokenParser
 {
     /**
+     *
+    */
+    public  static function toFQCN($className) : string
+    {
+        return '\\' . ltrim($className, '\\');
+    }
+
+    /**
      * @return string
      */
     public static function toPhpArray($elements, $withKeys = false)

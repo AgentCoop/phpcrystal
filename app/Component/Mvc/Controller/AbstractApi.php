@@ -14,7 +14,7 @@ abstract class AbstractApi extends BaseController
 
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    use CommonTrait;
+    use Common;
 
     /**
      * @return void

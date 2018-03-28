@@ -54,6 +54,24 @@ abstract class AbstractContainer
     }
 
     /**
+     *
+    */
+    final public function getKeyPrefix() : string
+    {
+        return $this->keyPrefix;
+    }
+
+    /**
+     *
+    */
+    final public function setKeyPrefix($prefix) : self
+    {
+        $this->keyPrefix = $prefix;
+
+        return $this;
+    }
+
+    /**
      * @return void
     */
     public function reload()
@@ -368,7 +386,7 @@ abstract class AbstractContainer
                     ->addParam($key)
                     ->_throw();
             } else {
-                return static::create();
+                return new static();
             }
         } elseif (is_array($pluckedItem)) {
             return static::createFromArray($pluckedItem);

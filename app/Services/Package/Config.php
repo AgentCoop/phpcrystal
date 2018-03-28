@@ -23,4 +23,20 @@ class Config extends AbstractContainer
 
         return $this;
     }
+
+    /**
+     * Start section with conf variables for a service
+    */
+    final public function service($serviceName)
+    {
+        $this->setKeyPrefix($serviceName);
+    }
+
+    /**
+     *
+    */
+    final public function close()
+    {
+        $this->setKeyPrefix(null);
+    }
 }
