@@ -29,8 +29,16 @@ class Locator implements FileLocatorInterface
 
 class Module extends AnnotationClassLoader
 {
+    private $annotReader;
+
     /** @var string */
     private $basedir;
+
+    /** @var string */
+    private $servicesBaseDir;
+
+    /** @var string */
+    private $controllersBaseDir;
 
     /** @var Manifest */
     private $manifest;
@@ -148,6 +156,9 @@ class Module extends AnnotationClassLoader
     {
         $this->manifest = $manifest;
         $this->basedir = $basedir;
+        $this->servicesBaseDir = $basedir . join(DIRECTORY_SEPARATOR, ['', 'Services']);
+        $this->controllersBaseDir = $basedir . join(DIRECTORY_SEPARATOR, ['', 'Http', 'Controllers']);
+        $this->annotReader = $this->createAnnotationReader();
 
         if (is_null($name)) {
             $parts = explode(DIRECTORY_SEPARATOR, $basedir);
@@ -156,67 +167,12 @@ class Module extends AnnotationClassLoader
             $this->name = $name;
         }
 
-        $reader = $this->createAnnotationReader();
-
         // Before parsing, all annotation classes must be loaded
         class_exists(Annotation\Route::class, true);
         class_exists(Annotation\Middleware::class, true);
         class_exists(Annotation\Service::class, true);
 
-        parent::__construct($reader);
-
-        $controllersBaseDir = $basedir . join(DIRECTORY_SEPARATOR, ['', 'Http', 'Controllers']);
-        $servicesBaseDir = $basedir . join(DIRECTORY_SEPARATOR, ['', 'Services']);
-
-        $dirs = [];
-
-        // The core module does not have controllers
-        if ($this->getName() != PackageManager::CORE_MODULE_NAME) {
-            $dirs[] = $controllersBaseDir;
-        }
-
-        if (file_exists($servicesBaseDir)) {
-            $dirs[] = $servicesBaseDir;
-        }
-
-        Filesystem\Finder::findPhpFiles($dirs, function($filename) use($reader) {
-            $parser = PhpParser::loadFromFile($filename);
-
-            if ( ! ($className = $parser->extractClassName())) {
-                return;
-            }
-
-            $reflectionClass = new \ReflectionClass($className);
-            $annots = $reader->getClassAnnotations($reflectionClass);
-
-            // Any AbstractService subclass must have a corresponding annotation
-            if (empty($annots) && is_subclass_of($className, AbstractService::class)) {
-                throw new \RuntimeException(sprintf('Missing service annotation for %s',
-                    $className));
-            }
-
-            foreach ($annots as $annot) {
-                if ($annot instanceof Annotation\Middleware) {
-                    if ( ! isset($this->middlewareMap[$className])) {
-                        $this->middlewareMap[$className] = [];
-                    }
-
-                    $this->middlewareMap[$className][] = $annot;
-                } else if ($annot instanceof  Annotation\Service &&
-                    is_subclass_of($className, AbstractService::class))
-                {
-                    if ( ! in_array($annot->getValue(), AbstractService::TYPES)) {
-                        throw new \RuntimeException(sprintf('Invalid service type specified "%s"',
-                            $this->getValue()));
-                    }
-
-                    $this->servicesMap[$className] = $annot;
-                }
-            }
-        })
-            ->run();
-
-        (new AnnotationDirectoryLoader(new Locator(), $this))->load($controllersBaseDir);
+        parent::__construct($this->createAnnotationReader());
     }
 
     /**
@@ -323,9 +279,88 @@ DOC;
         return $this;
     }
 
-    public function buildServices($env = PackageManager::LOCAL_ENV)
+    /**
+     *
+    */
+    public function buildControllers($env) : bool
     {
+        // The core module does not have controllers
+        if ($this->getName() == PackageManager::CORE_MODULE_NAME) {
+            return false;
+        }
+
+        Filesystem\Finder::findPhpFiles($this->controllersBaseDir, function($filename) {
+            $parser = PhpParser::loadFromFile($filename);
+
+            if ( ! ($className = $parser->extractClassName())) {
+                return;
+            }
+
+            $reflectionClass = new \ReflectionClass($className);
+            $annots = $this->annotReader->getClassAnnotations($reflectionClass);
+
+            foreach ($annots as $annot) {
+                if ($annot instanceof Annotation\Middleware) {
+                    if ( ! isset($this->middlewareMap[$className])) {
+                        $this->middlewareMap[$className] = [];
+                    }
+
+                    $this->middlewareMap[$className][] = $annot;
+                }
+            }
+        })
+            ->run();
+
+        (new AnnotationDirectoryLoader(new Locator(), $this))->load($this->controllersBaseDir);
+
+        file_put_contents($this->getRoutesDumpFilename(), $this->generateRoutes());
+
+        return true;
+    }
+
+    /**
+     *
+    */
+    public function buildServices($env = PackageManager::LOCAL_ENV) : bool
+    {
+        if ( ! file_exists($this->servicesBaseDir)) {
+            return false;
+        }
+
+        Filesystem\Finder::findPhpFiles($this->servicesBaseDir, function($filename) {
+            $parser = PhpParser::loadFromFile($filename);
+
+            if ( ! ($className = $parser->extractClassName())) {
+                return;
+            }
+
+            $reflectionClass = new \ReflectionClass($className);
+            $annots = $this->annotReader->getClassAnnotations($reflectionClass);
+
+            // Any AbstractService subclass must have a corresponding annotation
+            if (empty($annots) && is_subclass_of($className, AbstractService::class)) {
+                throw new \RuntimeException(sprintf('Missing service annotation for %s',
+                    $className));
+            }
+
+            foreach ($annots as $annot) {
+                if ($annot instanceof  Annotation\Service &&
+                    is_subclass_of($className, AbstractService::class))
+                {
+                    if ( ! in_array($annot->getValue(), AbstractService::TYPES)) {
+                        throw new \RuntimeException(sprintf('Invalid service type specified "%s"',
+                            $this->getValue()));
+                    }
+
+                    $this->servicesMap[$className] = $annot;
+                }
+            }
+        })
+            ->run();
+
         $this->dumpServiceProviders();
+
+        return true;
     }
 
     /**
@@ -339,8 +374,7 @@ DOC;
             ->setEnv($env)
             ->reload();
 
-        $this->dumpServiceProviders();
-
-        file_put_contents($this->getRoutesDumpFilename(), $this->generateRoutes());
+        $this->buildServices($env);
+        $this->buildControllers($env);
     }
 }

@@ -103,6 +103,10 @@ DOC;
 
     private function packageControllers($env)
     {
+        foreach ($this->getModules(true) as $module) {
+            $module->buildControllers($env);
+        }
+
         $this->dumpRoutingMap();
     }
 
@@ -170,7 +174,7 @@ DOC;
     {
         foreach ($this->modules as $module) {
             if ($module->getName() == $newModule->getName()) {
-                throw new \RuntimeException(sprintf('Module names must be unique, failed to load %s module',
+                throw new \RuntimeException(sprintf('A module name must be unique, failed to load %s module',
                     $newModule->getName()));
             }
         }

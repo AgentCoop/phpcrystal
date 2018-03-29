@@ -16,6 +16,7 @@ class Index extends Controller
      */
     public function indexPage(Request $request, PackageManager $manager)
     {
+
         try {
             $data = [];
 
