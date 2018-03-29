@@ -104,8 +104,8 @@ class Module extends AnnotationClassLoader
                     PhpParser::toFQCN($item['className']));
             }
 
-            $record = sprintf("\$this->app->%s(%s::class, function(\$app) { return (new %s(%s))->setModuleName('%s'); });\n",
-                $callName, $className, $className, join(',', $appMakeCalls), $this->getName());
+            $record = sprintf("\$this->app->%s(%s::class, function(\$app) { return (new %s(%s))->setModuleName('%s')->setLazyInit(%d); });\n",
+                $callName, $className, $className, join(',', $appMakeCalls), $this->getName(), $annot->getLazyInit());
 
             $content .= $record;
         }
@@ -321,6 +321,11 @@ DOC;
         $this->name = $name;
 
         return $this;
+    }
+
+    public function buildServices($env = PackageManager::LOCAL_ENV)
+    {
+        $this->dumpServiceProviders();
     }
 
     /**

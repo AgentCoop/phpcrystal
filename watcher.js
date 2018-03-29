@@ -3,24 +3,29 @@
 var watch = require('node-watch');
 
 const { exec } = require('child_process');
-const timerPackageBuild = 'package-build';
-const timerModuleBuild = 'module-build';
+
+function build_time(target, build_callback) {
+    console.time(target);
+    build_callback();
+    console.timeEnd(target)
+}
 
 watch('./modules', { recursive: true }, function(evt, name) {
-    if (evt != 'update') {
+    if (evt != 'update' && evt != 'remove') {
         return;
     }
 
     if (/Http\/Controllers/.test(name)) {
-        var matches = /modules\/([a-zA-Z0-9_]+)/.exec(name);
-        var module_name = matches[1];
-
-        console.time(timerModuleBuild + '-' + module_name);
-        exec('php artisan package:build --module=' + module_name);
-        console.timeEnd(timerModuleBuild + '-' + module_name);
+        build_time('Routes generation', function() {
+            exec('php artisan package:build --target=controllers');
+        });
+    } else if (/Services/.test(name)) {
+        build_time('Services generation', function() {
+            exec('php artisan package:build --target=services');
+        });
     } else if (/manifest\.php/.test(name)) {
-        console.time(timerPackageBuild);
-        exec('php artisan package:build');
-        console.timeEnd(timerPackageBuild);
+        build_time('Package', function() {
+            exec('php artisan package:build');
+        });
     }
 });

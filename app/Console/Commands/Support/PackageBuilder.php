@@ -8,12 +8,15 @@ use App\Console\Commands\AbstractCommand;
 
 class PackageBuilder extends AbstractCommand
 {
+    const TARGET_SERVICES = 'services';
+    const TARGET_CONTROLLERS = 'controllers';
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'package:build {--module=} {--production}';
+    protected $signature = 'package:build {--target=} {--production}';
 
     /**
      * The console command description.
@@ -29,7 +32,6 @@ class PackageBuilder extends AbstractCommand
      */
     public function handle(PackageManager $packageManager)
     {
-        $moduleName = $this->option('module');
         $prodEnv = $this->option('production');
 
         if ($prodEnv) {
@@ -38,11 +40,7 @@ class PackageBuilder extends AbstractCommand
             $env = PackageManager::LOCAL_ENV;
         }
 
-        if ( ! empty($moduleName)) {
-            $module = $packageManager->getModuleByName($moduleName);
-            $module->build($env);
-        } else {
-            $packageManager->build($env);
-        }
+        $target = $this->option('target');
+        $packageManager->build($env, $target);
     }
 }

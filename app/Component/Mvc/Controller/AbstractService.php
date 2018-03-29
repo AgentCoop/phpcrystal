@@ -17,12 +17,45 @@ abstract class AbstractService
 
     private $packageManager;
 
+    /** @var bool */
+    private $lazyInit= false;
+
     /**
      *
     */
-    public function __construct()
+    final public function __construct()
     {
         $this->packageManager = app()->make(PackageManager::class);
+
+        if ( ! $this->lazyInit) {
+            $this->init();
+        }
+    }
+
+    /**
+     *  Service initialization routine
+    */
+    public function init() : void
+    {
+
+    }
+
+    /**
+     *
+    */
+    final public function getLazyInit() : bool
+    {
+        return $this->lazyInit;
+    }
+
+    /**
+     *
+     */
+    final public function setLazyInit($val) : self
+    {
+        $this->lazyInit = boolval($val);
+
+        return $this;
     }
 
     /**

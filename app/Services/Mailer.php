@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Component\Mvc\Controller\AbstractService;
 
 /**
- * @Service("singleton", tag="mailer")
+ * @Service("singleton", tag="mailer", lazyInit=true)
 */
 class Mailer extends AbstractService
 {
