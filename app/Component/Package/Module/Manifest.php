@@ -6,6 +6,14 @@ use App\Component\Package\Config;
 class Manifest extends Config
 {
     /**
+     *
+    */
+    public function getBaseDir() : string
+    {
+        return dirname($this->filename);
+    }
+
+    /**
      * @return string|null
     */
     public function getRouterUriPrefix()
@@ -16,7 +24,7 @@ class Manifest extends Config
     /**
      * @return array
      */
-    public function getRouterMiddlewares()
+    public function getRouterMiddlewares() : array
     {
         return $this->get('router.middlewares', []);
     }

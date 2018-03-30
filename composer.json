@@ -31,7 +31,8 @@
             "App\\": "app/",
             "App\\Frontoffice\\": "modules/frontoffice/",
             "App\\Backoffice\\": "modules/backoffice/",
-            "App\\Api\\": "modules/api/"
+            "App\\Api\\": "modules/api/",
+            "App\\TestModule\\" : "tests/Fixture/testmod/"
         }
     },
     "autoload-dev": {

@@ -2,23 +2,43 @@
 
 namespace Tests\Unit;
 
-use App\Services\Filesystem\Finder;
+use App\Component\Base\Filesystem\Finder;
 
-use App\Services\Package\Manager as PackageManager;
+use App\Services\PackageManager;
 
 use Tests\TestCase;
 use Tests\Fixture as Fixture;
 
-use App\Services\Package\Module\Manifest as ModuleManifest;
+use App\Component\Package\Module\Manifest as ModuleManifest;
 
 use App\Component\Exception\Loggable;
 use App\Models\Physical\Support\Logging\MongoDB\ErrorEntry;
 use App\Models\Physical\Repository\User;
 
-class LaravelProjectBlueprintTest extends TestCase
+use App\TestModule\Services as Services;
+
+class PhpCrystalTest extends TestCase
 {
     const TEST_EMAIL = 'test@mail.com';
     const TEST_EMAIL_2 = 'test2@mail.com';
+
+    const MANIFEST_FILENAME = 'tests/Fixture/testmod/manifest.php';
+
+    public function testServiceSingleton()
+    {
+        $s1 = resolve(Services\Singleton::class);
+        $s2 = resolve(Services\Singleton::class);
+
+        $this->assertTrue(spl_object_id($s1) == spl_object_id($s2));
+    }
+
+    public function testServiceSimple()
+    {
+        $s1 = resolve(Services\Simple::class);
+        $s2 = resolve(Services\Simple::class);
+
+        $this->assertTrue(spl_object_id($s1) != spl_object_id($s2));
+    }
 
     /**
      * @return void
@@ -104,31 +124,8 @@ class LaravelProjectBlueprintTest extends TestCase
     */
     public function testContainer()
     {
-        $manifest = ModuleManifest::createFromFile(base_path() . '/tests/Fixture/manifest.php');
+        $manifest = ModuleManifest::createFromFile(base_path(self::MANIFEST_FILENAME));
 
         $this->assertEquals('/', $manifest->get('router.prefix'));
-    }
-
-    /**
-     * @return void
-     */
-    public function testScanner()
-    {
-        Finder::findByFilename(base_path().'/tests/Fixture', 'manifest.php', function($realpath) {
-            $this->assertEquals(base_path().'/tests/Fixture/manifest.php', $realpath);
-        })->run();
-    }
-
-    /**
-     * @return void
-     */
-    public function testPackageManager()
-    {
-        $manager = new PackageManager();
-        $manager->build();
-
-        //$this->assertEquals(1, count($manager->getModules()));
-
-        //$manager->getModules()[0]->dumpRoutes();
     }
 }

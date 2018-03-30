@@ -123,10 +123,11 @@ class Module extends AnnotationClassLoader
     /**
      *
     */
-    private function dumpServiceProviders() : void
+    private function dumpServiceProviders($env) : void
     {
         $content = $this->generateServiceProviders();
-        Filesystem\Aux::append(storage_path(PackageManager::SERVICE_PROVIDERS_DUMP_FILENAME), $content);
+        $filename = storage_path(sprintf(PackageManager::SERVICE_PROVIDERS_DUMP_FILENAME, $env));
+        Filesystem\Aux::append($filename, $content);
     }
 
     /**
@@ -151,8 +152,10 @@ class Module extends AnnotationClassLoader
     /**
      *
     */
-    public function __construct(Manifest $manifest, $basedir, $name = null)
+    public function __construct(Manifest $manifest, $name = null)
     {
+        $basedir = $manifest->getBaseDir();
+
         $this->manifest = $manifest;
         $this->basedir = $basedir;
         $this->servicesBaseDir = $basedir . join(DIRECTORY_SEPARATOR, ['', 'Services']);
@@ -357,7 +360,7 @@ DOC;
         })
             ->run();
 
-        $this->dumpServiceProviders();
+        $this->dumpServiceProviders($env);
 
         return true;
     }

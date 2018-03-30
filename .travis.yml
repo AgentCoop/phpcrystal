@@ -1,0 +1,25 @@
+language: php
+
+env:
+  global:
+    - APP_ENV=phpunit
+
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.2
+      env: setup=lowest
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - ./scripts/ci/before-install.sh
+
+install:
+  - ./scripts/ci/install.sh
+
+script: vendor/bin/phpunit

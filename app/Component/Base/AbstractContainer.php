@@ -48,7 +48,7 @@ abstract class AbstractContainer
     /**
      *
      */
-    final public function __construct(array $items = [])
+    public function __construct(array $items = [])
     {
         $this->items = $items;
     }
@@ -161,23 +161,20 @@ abstract class AbstractContainer
 
         while (count($parts) > 1) {
             $segment = array_shift($parts);
+
             if ( ! array_key_exists($segment, $arrRef) ||
                 ! is_array($arrRef[$segment]))
             {
-                if ($defaultValue) {
-                    $this->set($itemKey, $defaultValue);
-                    return $defaultValue;
-                } else {
-                    return null;
-                }
+                return $defaultValue;
             } else {
                 $arrRef = &$arrRef[$segment];
             }
         }
 
         $lastKey = end($parts);
+
         if ( ! isset($arrRef[$lastKey])) {
-            return null;
+            return is_null($defaultValue) ? null : $defaultValue;
         }
 
         $item = $arrRef[$lastKey];

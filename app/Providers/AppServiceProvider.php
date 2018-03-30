@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Load service providers
-        $filename = storage_path(PackageManager::SERVICE_PROVIDERS_DUMP_FILENAME);
+        $filename = storage_path(sprintf(PackageManager::SERVICE_PROVIDERS_DUMP_FILENAME, env('APP_ENV')));
 
         if (file_exists($filename)) {
             require $filename;
