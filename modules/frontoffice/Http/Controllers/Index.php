@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Component\Mvc\Controller\AbstractView as Controller;
 
 use App\Frontoffice\Services\View as ViewService;
-use App\Services\Package\Manager as PackageManager;
+use App\Component\Package\Manager as PackageManager;
 
 class Index extends Controller
 {

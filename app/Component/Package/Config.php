@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Package;
+namespace App\Component\Package;
 
 use App\Component\Base\AbstractContainer;
 

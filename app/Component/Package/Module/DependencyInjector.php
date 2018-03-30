@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Package\Module;
+namespace App\Component\Package\Module;
 
 use App\Component\Mvc\Controller\AbstractService;
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Services\Package\Manager as PackageManager;
+use App\Component\Package\Manager as PackageManager;
 
 $this->set('router.prefix', '/');
 $this->set('router.middlewares', ['web']);

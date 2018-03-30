@@ -1,7 +1,7 @@
 <?php
-namespace App\Services\Package\Module;
+namespace App\Component\Package\Module;
 
-use App\Services\Package\Config;
+use App\Component\Package\Config;
 
 class Manifest extends Config
 {

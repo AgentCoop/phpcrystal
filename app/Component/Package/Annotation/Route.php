@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Package\Annotation;
+namespace App\Component\Package\Annotation;
 
 use Symfony\Component\Routing\Annotation\Route as SymfonyAnnotationRoute;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Package;
+namespace App\Component\Package;
 
 use App\Services\Base\PhpParser;
 use App\Services\Filesystem as Filesystem;
@@ -86,7 +86,7 @@ DOC;
     }
 
     /**
-     * @return \App\Services\Package\Module\Module
+     * @return \App\Component\Package\Module\Module
      *
      * @throws \RuntimeException
     */

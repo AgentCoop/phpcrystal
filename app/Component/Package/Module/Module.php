@@ -1,7 +1,6 @@
 <?php
-namespace App\Services\Package\Module;
+namespace App\Component\Package\Module;
 
-use Faker\Provider\File;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Routing\Loader\AnnotationClassLoader;
 use Symfony\Component\Routing\Loader\AnnotationDirectoryLoader;
@@ -14,8 +13,8 @@ use App\Services\Base\PhpParser;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 
-use App\Services\Package\Annotation as Annotation;
-use App\Services\Package\Manager as PackageManager;
+use App\Component\Package\Annotation as Annotation;
+use App\Component\Package\Manager as PackageManager;
 use App\Services\Factory;
 
 
@@ -144,7 +143,7 @@ class Module extends AnnotationClassLoader
     private function createAnnotationReader()
     {
         $reader = new SimpleAnnotationReader();
-        $reader->addNamespace('\\App\\Services\\Package\\Annotation');
+        $reader->addNamespace('\\App\\Component\\Package\\Annotation');
 
         return $reader;
     }
