@@ -1,0 +1,47 @@
+version: '3.2'
+
+volumes:
+  mongodb-data:
+
+services:
+  phpcrystal-php:
+    build: .
+    container_name: "php.phpcrystal"
+    volumes:
+      - type: bind
+        source: ./
+        target: /var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    command: phpunit -c /var/www/html/phpunit.xml
+    environment:
+      - MONGODB_HOST=phpcrystal-mongodb
+
+  phpcrystal-nginx:
+    build: ./config/docker/nginx/dev
+    container_name: "nginx.phpcrystal"
+    ports:
+      - 60000:80
+    volumes:
+      - type: bind
+        source: ./
+        target: /var/www/html
+
+  phpcrystal-mongodb:
+    image: mongo:3.4.1
+    container_name: "mongodb.phpcrystal"
+    volumes:
+      - mongodb-data:/data/db
+
+  phpcrystal-mongodb-data:
+    image: alpine
+    container_name: "data.mongodb.phpcrystal"
+    volumes:
+      - type: volume
+        source: mongodb-data
+        target: /data/db
+    command: "true"
+
+  phpcrystal-redis:
+    image: redis:3.2.7-alpine
+    container_name: "redis.phpcrystal"

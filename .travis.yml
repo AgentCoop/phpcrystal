@@ -1,25 +1,33 @@
+sudo: required
+dist: trusty
 language: php
-
 env:
-  global:
-    - APP_ENV=phpunit
+  - APP_ENV=phpunit
+php:
+  - "7.2"
 
-matrix:
-  fast_finish: true
-  include:
-    - php: 7.2
-      env: setup=lowest
-
-sudo: false
-
-cache:
-  directories:
-    - $HOME/.composer/cache
-
-before_install:
-  - ./scripts/ci/before-install.sh
+services:
+  - docker
 
 install:
-  - ./scripts/ci/install.sh
+  # Update docker-engine using Ubuntu 'trusty' apt repo
+  - >
+    curl -sSL "https://get.docker.com/gpg" |
+     sudo -E apt-key add -
+  - >
+    echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" |
+     sudo tee -a /etc/apt/sources.list
+  - sudo apt-get update
+  - >
+    sudo apt-get -o Dpkg::Options::="--force-confdef" \
+     -o Dpkg::Options::="--force-confold" --assume-yes install docker-engine --allow-unauthenticated
+  - docker version
 
-script: vendor/bin/phpunit
+  # Update docker-compose via pip
+  - sudo pip install docker-compose
+  - docker-compose version
+  - docker-compose up --build -d
+  - docker ps -a
+
+script:
+  - docker-compose -f docker-compose-phpunit.yml up --exit-code-from phpcrystal-php

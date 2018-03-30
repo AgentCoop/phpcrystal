@@ -1,4 +1,12 @@
-<p align="center"><img width="256" height="256" src="https://avatars2.githubusercontent.com/u/13236453"></p>
+<p align="center"><img width="128" height="128" src="https://avatars2.githubusercontent.com/u/13236453">
+</p>
+
+<p align="center">
+<a href="https://travis-ci.org/AgentCoop/phpcrystal"><img src="https://travis-ci.org/AgentCoop/phpcrystal.svg?branch=master" alt="Build Status"></a>
+<a href="https://packagist.org/packages/agentcoop/phpcrystal"><img src="https://poser.pugx.org/agentcoop/phpcrystal/downloads" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/agentcoop/phpcrystal"><img src="https://poser.pugx.org/agentcoop/phpcrystal/v/stable" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/agentcoop/phpcrystal"><img src="https://poser.pugx.org/agentcoop/phpcrystal/license" alt="License"></a>
+</p>
 
 ## About PhpCrystal
 PhpCrystal is an extension of the popular PHP framework Laravel shipped with a modular approach and functionalities such as Symfony annotated routing mechanism, error logging and reporting, extended MVC classes, Docker configuration, and many others.
