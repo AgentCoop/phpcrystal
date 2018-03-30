@@ -2,7 +2,7 @@
 
 namespace App\Component\Mvc\Controller;
 
-use App\Component\Package\Manager as PackageManager;
+use App\Services\PackageManager;
 
 abstract class AbstractService
 {

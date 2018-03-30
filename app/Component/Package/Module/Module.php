@@ -14,7 +14,7 @@ use App\Component\Base\PhpParser;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 
 use App\Component\Package\Annotation as Annotation;
-use App\Component\Package\Manager as PackageManager;
+use App\Services\PackageManager;
 use App\Services\Factory;
 
 

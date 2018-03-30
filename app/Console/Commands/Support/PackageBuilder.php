@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Support;
 
-use App\Component\Package\Manager as PackageManager;
+use App\Services\PackageManager;
 
 use App\Console\Commands\AbstractCommand;
 

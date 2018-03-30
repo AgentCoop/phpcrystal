@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Component\Package\Manager as PackageManager;
+use App\Services\PackageManager;
 
 class AppServiceProvider extends ServiceProvider
 {

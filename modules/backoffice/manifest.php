@@ -1,6 +1,6 @@
 <?php
 
-use App\Component\Package\Manager as PackageManager;
+use App\Services\PackageManager;
 
 $this->set('router.prefix', null);
 $this->set('router.middlewares', ['admin']);

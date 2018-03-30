@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Component\Package;
+namespace App\Services;
 
 use App\Component\Base\PhpParser;
 use App\Component\Base\Filesystem as Filesystem;
+use App\Component\Package\Module as Module;
 
 use App\Console\Commands\Support\PackageBuilder;
 
-class Manager
+class PackageManager
 {
     const SERVICE_PROVIDERS_DUMP_FILENAME = 'framework/cache/service-providers.php';
 
