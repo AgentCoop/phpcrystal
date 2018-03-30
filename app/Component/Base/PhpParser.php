@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Base;
+namespace App\Component\Base;
 
 use Doctrine\Common\Annotations\TokenParser;
 

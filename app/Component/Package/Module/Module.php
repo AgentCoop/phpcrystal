@@ -8,8 +8,8 @@ use Symfony\Component\Routing\Route;
 
 use App\Component\Mvc\Controller\AbstractService;
 
-use App\Services\Filesystem as Filesystem;
-use App\Services\Base\PhpParser;
+use App\Component\Base\Filesystem as Filesystem;
+use App\Component\Base\PhpParser;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 

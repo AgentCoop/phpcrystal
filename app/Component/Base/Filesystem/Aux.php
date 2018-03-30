@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Filesystem;
+namespace App\Component\Base\Filesystem;
 
 
 class Aux
