@@ -9,52 +9,80 @@ This is so-called 'thin controller'. All application logic, including presentati
 
 Following this rule of thumb will help to keep your code clean.
 
-## Examples of controller methods
+Presentation logic should be kept under the *<module_dir>/Services/View/*   directory. All presentational services are derived from the
+abstract class **App\Component\Mvc\AbstractView**
+
+## Summary
+ * Location: *<module_dir>/Http/Controllers/*
+ * Base classes:
+   1. **App\Component\Mvc\Controller\AbstractView**
+   2. **App\Component\Mvc\Controller\AbstractApi**
+ * Annotations:
+    1. @Route("/profile/edit/{userId}", methods={"post"}, name="edit_user_profile", requirements={"userId": "\d+"}))
+
+## Examples
 ```php
+namespace App\Frontoffice\Http\Controllers;
+ 
+use Illuminate\Http\Request;
+ 
+use App\Component\Mvc\Controller\AbstractView as Controller;
+ 
+use App\Frontoffice\Services\View as ViewService;
+ 
+class Index extends Controller
+{
     /**
-     * @return Response
+     * @Route("/", name="index")
+     */
+    public function indexPage(Request $request)
+    {
+
+        try {
+            $data = [];
+ 
+            $data = array_merge(
+                ViewService\Index::create()->getData(),
+                $data
+            );
+ 
+            return $this->i18View('frontend.pages.welcome', $data);
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+}
+
+```
+
+```php
+namespace App\Api\Http\Controllers;
+ 
+use Illuminate\Http\Request;
+ 
+use App\Component\Mvc\Controller\AbstractApi as Controller;
+  
+class OrderController extends Controller
+{
+    /**
+     * @Route("/webhooks/order/creation", name="order_creation_webhook")
      */
     public function orderCreationWebhook(Request $request)
     {
         try {
             $order = OrderManager::updateOrCreate($request->all());
-
+ 
             $orderManager = new OrderManager($order);
             $orderManager->process();
-
+ 
             return response('', 200)
                 ->header('Content-Type', 'text/plain');
         } catch (\RuntimeException $e) { // Handle custom exception
             // ...
         } catch (\Exception $e) { // Handle system exception
+ 
             return $this->handleException($e);
         }
     }
-```
-
-Presentation logic should be kept under the *./app/Services/View folder*. All presentational services are derived from the
-abstract class *AbstractView*
-
-```php
-  /**
-   * @return Response
-  */
-  public function settingsAction(Request $request)
-  {
-    try {
-      $user = Auth::user();
-
-      $view = [];
-      $view['profile_menu_flag'] = true;
-
-      $view = array_merge($view,
-          ProfileView\Common::create($user)->getData(),
-          ViewService\Profile\Settings::create($user)->getData()
-      );
-
-      return $this->i10View('frontend.pages.profile.settings.index', $view);
-    } catch (\Exception $e) {
-      return $this->handleException($e);
-    }
-  }
+}
 ```
