@@ -9,7 +9,11 @@
 </p>
 
 ## About PhpCrystal
-PhpCrystal is an extension of the popular PHP framework Laravel shipped with a modular approach and functionalities such as Symfony annotated routing mechanism, error logging and reporting, extended MVC classes, Docker configuration, and many others.
+PhpCrystal is an extension of the popular PHP framework Laravel shipped with a modular approach and functionalities such as:
+ * Declaration and auto-generation of routes and services using annotations
+ * Error logging and reporting
+ * Extended MVC classes
+ * Docker configuration
 
 ## Installation
 Create a new project:
@@ -18,8 +22,7 @@ composer create-project --no-install agentcoop/phpcrystal myapp
 ```
 Build Docker images:
 ```bash
-cd myapp
-docker-compose up --build
+cd myapp && docker-compose up --build
 ```
 Go to http://localhost:60000 and, if everything is good, you'll see the Laravel welcome page.
 

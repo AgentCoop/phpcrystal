@@ -7,14 +7,13 @@ use Illuminate\Http\Request;
 use App\Component\Mvc\Controller\AbstractView as Controller;
 
 use App\Frontoffice\Services\View as ViewService;
-use App\Services\PackageManager;
 
 class Index extends Controller
 {
     /**
      * @Route("/", name="index")
      */
-    public function indexPage(Request $request, PackageManager $manager)
+    public function indexPage(Request $request)
     {
 
         try {
@@ -25,11 +24,8 @@ class Index extends Controller
                 $data
             );
 
-            $manager->build();
-
             return $this->i18View('frontend.pages.welcome', $data);
         } catch (\Exception $e) {
-            var_dump($e); exit;
             return $this->handleException($e);
         }
     }

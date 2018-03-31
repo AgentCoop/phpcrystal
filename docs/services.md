@@ -1,6 +1,6 @@
 ## Summary
  * Location: *<module_dir>/Services/* 
- * Base class: \App\Component\Mvc\Controller\AbstractService
+ * Base class: **App\Component\Mvc\Controller\AbstractService**
  * Annotations: @Service("simple|singleton", tag="string", lazyInit=boolen)
 
 ## Configuration
