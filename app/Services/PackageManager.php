@@ -13,6 +13,7 @@ class PackageManager
     const SERVICE_PROVIDERS_DUMP_BASENAME = 'service-providers-%s.php';
     const ROUTES_MAP_DUMP_BASENAME = 'routes-map-%s.php';
     const MODULE_ROUTES_DUMP_BASENAME = 'routes-%s-%s.php';
+    const CONTROLLERS_MAP_DUMP_BASENAME = 'controllers-map-%s.php';
 
     const CORE_MODULE_NAME = 'phpcrystal';
 
@@ -21,6 +22,9 @@ class PackageManager
     const PHPUNIT_ENV = 'phpunit';
 
     private $modules = [];
+
+    /** @var array */
+    private $controllersMap = [];
 
     /**
      * @return void
@@ -32,6 +36,19 @@ class PackageManager
         })
             ->setMaxDepth(1)
             ->run();
+    }
+
+    private function dumpControllersMap($env) : void
+    {
+        $combinedMap = [];
+
+        foreach ($this->getModules() as $module) {
+            $combinedMap = array_merge($combinedMap, $module->getControllersMap());
+        }
+
+        $filename = self::generateDumpFilename(self::CONTROLLERS_MAP_DUMP_BASENAME, $env);
+
+        Filesystem\Aux::append($filename, serialize($combinedMap));
     }
 
     /**
@@ -75,8 +92,6 @@ class PackageManager
     */
     public function __construct()
     {
-        clearstatcache();
-
         // Find all modules in ./modules dir
         $this->scanModules();
 
@@ -84,13 +99,43 @@ class PackageManager
         $coreModule = new Module\Module(Module\Manifest::createFromFile(app_path('manifest.php')), self::CORE_MODULE_NAME);
 
         $this->addModule($coreModule);
+
+        $this->loadControllersMap();
     }
 
+    /**
+     *
+    */
     public static function generateDumpFilename($tpl, ...$tplArgs): string
     {
         return storage_path('framework/cache/' . sprintf($tpl, ...$tplArgs));
     }
 
+    /**
+     *
+     */
+    public function getControllersMap() : array
+    {
+        return $this->controllersMap;
+    }
+
+    /**
+     *
+    */
+    public function loadControllersMap() : self
+    {
+        $filename = self::generateDumpFilename(self::CONTROLLERS_MAP_DUMP_BASENAME, env('APP_ENV'));
+
+        if (file_exists($filename)) {
+            $this->controllersMap = unserialize(file_get_contents($filename));
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+    */
     public function loadRoutingMap() : self
     {
         $filename = self::generateDumpFilename(self::ROUTES_MAP_DUMP_BASENAME, env('APP_ENV'));
@@ -125,6 +170,7 @@ class PackageManager
         }
 
         $this->dumpRoutingMap($env);
+        $this->dumpControllersMap($env);
     }
 
     private function packageServices($env) : void
@@ -150,6 +196,8 @@ class PackageManager
      */
     public function build($env = self::LOCAL_ENV, $target = null) : void
     {
+        clearstatcache();
+
         switch ($target) {
             case PackageBuilder::TARGET_CONTROLLERS:
                 $this->packageControllers($env);

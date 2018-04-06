@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
 <head>
-    @include('frontend.incs.head')
+    @include('incs.head')
 </head>
 <body>
     @yield('content')

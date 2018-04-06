@@ -1,6 +1,8 @@
 <?php
 namespace App\Component\Package\Module;
 
+use Illuminate\Routing\Controller;
+
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Routing\Loader\AnnotationClassLoader;
 use Symfony\Component\Routing\Loader\AnnotationDirectoryLoader;
@@ -53,6 +55,9 @@ class Module extends AnnotationClassLoader
 
     /** @var array */
     private $servicesMap = [];
+
+    /** @var array */
+    private $controllersMap = [];
 
     /** @var array */
     private static $taggedServices = [];
@@ -180,14 +185,6 @@ class Module extends AnnotationClassLoader
     /**
      * @return string
     */
-    public function getRoutesDumpFilename()
-    {
-        return base_path('/routes/') . $this->getName() . '_module.php';
-    }
-
-    /**
-     * @return string
-    */
     public function generateRoutes()
     {
         $content = '';
@@ -290,6 +287,16 @@ class Module extends AnnotationClassLoader
                 return;
             }
 
+            if ( ! is_subclass_of($className, Controller::class)) {
+                throw new \RuntimeException(sprintf('Class "%s" must be a subclass of "%s"',
+                    $className, Controller::class));
+            }
+
+            // Add an entry to the controllers map if necessary
+            if ( ! isset($this->controllersMap[$className])) {
+                $this->controllersMap[$className] = ['mod_name' => $this->getName()];
+            }
+
             $reflectionClass = new \ReflectionClass($className);
             $annots = $this->annotReader->getClassAnnotations($reflectionClass);
 
@@ -374,5 +381,13 @@ class Module extends AnnotationClassLoader
 
         $this->buildServices($env);
         $this->buildControllers($env);
+    }
+
+    /**
+     *
+    */
+    public function getControllersMap(): array
+    {
+        return $this->controllersMap;
     }
 }

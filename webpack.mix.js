@@ -6,7 +6,7 @@ let mix = require('laravel-mix');
 
 // Bundle up application plain CSS files
 mix.styles([
-    'resources/views/frontend/**/*.css'
+    'modules/frontoffice/resources/views/**/*.css'
 ], 'public/css/frontend/all.css');
 
 if (mix.inProduction()) {

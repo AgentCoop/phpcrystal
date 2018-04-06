@@ -24,7 +24,7 @@ class Index extends Controller
                 $data
             );
 
-            return $this->i18View('frontend.pages.welcome', $data);
+            return $this->i18View('pages.welcome', $data);
         } catch (\Exception $e) {
             return $this->handleException($e);
         }
