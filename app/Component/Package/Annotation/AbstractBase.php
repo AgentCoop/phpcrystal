@@ -4,16 +4,28 @@ namespace App\Component\Package\Annotation;
 
 abstract class AbstractBase
 {
+    const MODE_MERGE = 'merge';
+    const MODE_OVERWRITE = 'overwrite';
+
     /** @var string */
     private $value;
+
+    protected $mode;
+
+    protected function mergeArrays($a, $b)
+    {
+        return array_unique(array_merge((array)$a, (array)$b));
+    }
 
     /**
      * @param array $data An array of key/value parameters
      *
      * @throws \RuntimeException
      */
-    public function __construct(array $data)
+    public function __construct(array $data, $mode = self::MODE_OVERWRITE)
     {
+        $this->mode = $mode;
+
         if (isset($data['value'])) {
             $this->value = $data['value'];
             unset($data['value']);
@@ -36,5 +48,18 @@ abstract class AbstractBase
     final public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMode() : string
+    {
+        return $this->mode;
+    }
+
+    public function setMode($mode) : void
+    {
+        $this->mode = $mode;
     }
 }

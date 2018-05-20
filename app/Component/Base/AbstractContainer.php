@@ -391,4 +391,9 @@ abstract class AbstractContainer
             return $pluckedItem;
         }
     }
+
+    public function getTopLevelKeys()
+    {
+        return array_keys($this->items);
+    }
 }

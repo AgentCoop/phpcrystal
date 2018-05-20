@@ -25,11 +25,21 @@ trait User
     }
 
     /**
-     * @return array
-    */
-    public function getRoles()
+     * @return string
+     */
+    final public function getRole()
     {
-        return (array)$this->roles;
+        return $this->role;
+    }
+
+    /**
+     * @return $this
+     */
+    final public function setRole($role)
+    {
+        $this->role = $role;
+
+        return $this;
     }
 
     /**

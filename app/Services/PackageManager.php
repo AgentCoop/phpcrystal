@@ -13,7 +13,7 @@ class PackageManager
     const SERVICE_PROVIDERS_DUMP_BASENAME = 'service-providers-%s.php';
     const ROUTES_MAP_DUMP_BASENAME = 'routes-map-%s.php';
     const MODULE_ROUTES_DUMP_BASENAME = 'routes-%s-%s.php';
-    const CONTROLLERS_MAP_DUMP_BASENAME = 'controllers-map-%s.php';
+    const METACLASSES_MAP_DUMP_BASENAME = 'metaclasses-%s.php';
 
     const CORE_MODULE_NAME = 'phpcrystal';
 
@@ -24,7 +24,7 @@ class PackageManager
     private $modules = [];
 
     /** @var array */
-    private $controllersMap = [];
+    private $metaClassesMap = [];
 
     /**
      * @return void
@@ -38,6 +38,19 @@ class PackageManager
             ->run();
     }
 
+    private function dumpMetaClassesMap($env) : void
+    {
+        $combinedMap = [];
+
+        foreach ($this->getModules() as $module) {
+            $combinedMap = array_merge($combinedMap, $module->getMetaClassesMap());
+        }
+
+        $filename = self::generateDumpFilename(self::METACLASSES_MAP_DUMP_BASENAME, $env);
+
+        Filesystem\Aux::write($filename, serialize($combinedMap), 0666);
+    }
+
     private function dumpControllersMap($env) : void
     {
         $combinedMap = [];
@@ -48,7 +61,7 @@ class PackageManager
 
         $filename = self::generateDumpFilename(self::CONTROLLERS_MAP_DUMP_BASENAME, $env);
 
-        Filesystem\Aux::append($filename, serialize($combinedMap));
+        Filesystem\Aux::append($filename, serialize($combinedMap), 0666);
     }
 
     /**
@@ -62,11 +75,17 @@ class PackageManager
         $mapContent = '';
 
         foreach ($this->getModules(true) as $module) {
+            /** @var Module\Manifest $manifest */
             $manifest = $module->getManifest();
+
             $subdomain = $manifest->getRouterSubDomain();
             $prefix = $manifest->getRouterUriPrefix();
+
+            $middlewares = array_merge($manifest->getRouterMiddlewares(),
+                ['module']);
+
             $record = sprintf('Route::middleware(%s)',
-                PhpParser::toPhpArray($manifest->getRouterMiddlewares()));
+                PhpParser::toPhpArray($middlewares));
 
             if ($subdomain) {
                 $record .= "->domain('$subdomain')";
@@ -84,12 +103,9 @@ class PackageManager
             $mapContent .= $record;
         }
 
-        Filesystem\Aux::append($filename, $mapContent);
+        Filesystem\Aux::append($filename, $mapContent, 0555);
     }
 
-    /**
-     *
-    */
     public function __construct()
     {
         // Find all modules in ./modules dir
@@ -100,7 +116,7 @@ class PackageManager
 
         $this->addModule($coreModule);
 
-        $this->loadControllersMap();
+        $this->loadMetaClassesMap();
     }
 
     /**
@@ -114,20 +130,12 @@ class PackageManager
     /**
      *
      */
-    public function getControllersMap() : array
+    public function loadMetaClassesMap() : self
     {
-        return $this->controllersMap;
-    }
-
-    /**
-     *
-    */
-    public function loadControllersMap() : self
-    {
-        $filename = self::generateDumpFilename(self::CONTROLLERS_MAP_DUMP_BASENAME, env('APP_ENV'));
+        $filename = self::generateDumpFilename(self::METACLASSES_MAP_DUMP_BASENAME, env('APP_ENV'));
 
         if (file_exists($filename)) {
-            $this->controllersMap = unserialize(file_get_contents($filename));
+            $this->metaClassesMap = unserialize(file_get_contents($filename));
         }
 
         return $this;
@@ -163,6 +171,9 @@ class PackageManager
         throw new \RuntimeException(sprintf('Failed to find package module %s', $name));
     }
 
+    /**
+     * @param $env
+     */
     private function packageControllers($env) : void
     {
         foreach ($this->getModules(true) as $module) {
@@ -170,9 +181,11 @@ class PackageManager
         }
 
         $this->dumpRoutingMap($env);
-        $this->dumpControllersMap($env);
     }
 
+    /**
+     * @param $env
+     */
     private function packageServices($env) : void
     {
         $providersDump = self::generateDumpFilename(self::SERVICE_PROVIDERS_DUMP_BASENAME, $env);
@@ -185,6 +198,9 @@ class PackageManager
         Filesystem\Aux::append($providersDump, Module\Module::generateTaggedServices());
     }
 
+    /**
+     * @param $env
+     */
     private function packageAll($env) : void
     {
         $this->packageControllers($env);
@@ -208,6 +224,8 @@ class PackageManager
             default:
                 $this->packageAll($env);
         }
+
+        $this->dumpMetaClassesMap($env);
     }
 
     /**
@@ -247,5 +265,37 @@ class PackageManager
         $this->modules[] = $newModule;
 
         return $this;
+    }
+
+    /**
+     * @return \App\Component\Package\Module\
+     */
+    public function getModuleByClassName($className)
+    {
+        foreach ($this->metaClassesMap as $key => $metaClass) {
+            if ($key == $className) {
+                return $this->getModuleByName($metaClass->getModuleName());
+            }
+        }
+
+        throw new \RuntimeException();
+    }
+
+    public function getAnnotationInstance($targetClass, $targetMethod =  null, $annotClass)
+    {
+        /** @var \App\Component\Package\AbstractMetaClass $targetMetaClass */
+        $targetMetaClass = null;
+
+        foreach ($this->metaClassesMap as $className => $metaClass) {
+            if ($targetClass == $className) {
+                $targetMetaClass = $metaClass;
+            }
+        }
+
+        if (is_null($targetMetaClass)) {
+            throw new \RuntimeException(sprintf('Failed to retrieve routing action'));
+        }
+
+        return $targetMetaClass->getMergedAnnotations($annotClass, $targetMethod);
     }
 }

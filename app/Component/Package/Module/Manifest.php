@@ -36,4 +36,12 @@ class Manifest extends Config
     {
         return $this->get('router.subdomain', null);
     }
+
+    /**
+     * @return array
+     */
+    public function getAllowedRoles() : array
+    {
+        return (array)$this->get('security_policy.allowed_roles', null);
+    }
 }

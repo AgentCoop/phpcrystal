@@ -5,15 +5,30 @@ namespace App\Component\Base\Filesystem;
 
 class Aux
 {
-    /**
-     *
-    */
-    public static function append($filename, $content) : void
+    public static function append($filename, $content, $chmod = null) : void
     {
         $fd = fopen($filename, 'a+');
         fwrite($fd, $content, strlen($content));
+
+        if ( ! is_null($chmod)) {
+            chmod($filename, $chmod);
+        }
+
         fclose($fd);
     }
+
+    public static function write($filename, $content, $chmod = null) : void
+    {
+        $fd = fopen($filename, 'w+');
+        fwrite($fd, $content, strlen($content));
+
+        if ( ! is_null($chmod)) {
+            chmod($filename, $chmod);
+        }
+
+        fclose($fd);
+    }
+
 
     /**
      *
