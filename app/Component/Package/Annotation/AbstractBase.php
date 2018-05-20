@@ -22,7 +22,7 @@ abstract class AbstractBase
      *
      * @throws \RuntimeException
      */
-    public function __construct(array $data, $mode = self::MODE_OVERWRITE)
+    public function __construct(array $data, $mode = self::MODE_MERGE)
     {
         $this->mode = $mode;
 

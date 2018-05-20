@@ -41,19 +41,22 @@ class SecurityManager
             return $next($request);
         }
 
-//        $user1 = new User();
-//        $user1->setRole('admin')->save();
-//
-//        Auth::login($user1);
-
         if ( ! Auth::check()) {
-            throw new \RuntimeException(null, 403);
+            if ( ! empty($redirectTo = $securityPolicy->getNotAuthenticatedPage())) {
+                return redirect($redirectTo);
+            } else {
+                return abort(401);
+            }
         }
 
         $user = Auth::user();
 
         if ( ! in_array($user->getRole(), $allowedRoles)) {
-            throw new \RuntimeException(null, 403);
+            if ( ! empty($redirectTo = $securityPolicy->getNotAuthorizedPage())) {
+                return redirect($redirectTo);
+            } else {
+                return abort(403);
+            }
         }
 
         return $next($request);

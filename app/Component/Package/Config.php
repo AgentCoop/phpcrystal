@@ -2,9 +2,9 @@
 
 namespace App\Component\Package;
 
-use App\Component\Base\AbstractContainer;
+use App\Component\Base\AbstractConfig;
 
-class Config extends AbstractContainer
+class Config extends AbstractConfig
 {
     /**
      * @return string|null
@@ -30,13 +30,5 @@ class Config extends AbstractContainer
     final public function service($serviceName)
     {
         $this->setKeyPrefix($serviceName);
-    }
-
-    /**
-     *
-    */
-    final public function close()
-    {
-        $this->setKeyPrefix(null);
     }
 }
