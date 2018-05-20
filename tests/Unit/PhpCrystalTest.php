@@ -17,6 +17,8 @@ use App\Models\Physical\Repository\User;
 
 use App\TestModule\Services as Services;
 
+use Illuminate\Support\Facades\DB;
+
 class PhpCrystalTest extends TestCase
 {
     const TEST_EMAIL = 'test@mail.com';
@@ -81,6 +83,8 @@ class PhpCrystalTest extends TestCase
      */
     public function testDataPagination()
     {
+        DB::collection('users')->delete();
+
         $user = new User();
         $user
             ->setEmail(self::TEST_EMAIL)
