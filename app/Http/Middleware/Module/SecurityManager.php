@@ -50,8 +50,17 @@ class SecurityManager
         }
 
         $user = Auth::user();
+        $hasRequiredRole = false;
 
-        if ( ! in_array($user->getRole(), $allowedRoles)) {
+        foreach ($user->getRoles() as $role) {
+            if (in_array($role->getName(), $allowedRoles)) {
+                $hasRequiredRole = true;
+
+                break;
+            }
+        }
+
+        if ( ! $hasRequiredRole) {
             if ( ! empty($redirectTo = $securityPolicy->getNotAuthorizedPage())) {
                 return redirect($redirectTo);
             } else {

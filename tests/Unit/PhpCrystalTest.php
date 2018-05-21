@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Component\Base\Filesystem\Finder;
 
+use App\Models\Physical\Repository\UserRole;
 use App\Services\PackageManager;
 
 use Tests\TestCase;
@@ -22,12 +23,53 @@ use App\TestModule\Services as Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
+use Auth;
+
 class PhpCrystalTest extends TestCase
 {
     const TEST_EMAIL = 'test@mail.com';
     const TEST_EMAIL_2 = 'test2@mail.com';
 
     const MANIFEST_FILENAME = 'tests/Fixture/testmod/manifest.php';
+
+    private function withUser(\Closure $cb, $role = Role::ROLE_ADMIN)
+    {
+        try {
+            $success = false;
+
+            $role = Role::create()
+                ->setName($role)
+            ;
+
+            $role->save();
+            $role->refresh();
+
+            $user = new User();
+            $user
+                ->setEmail(self::TEST_EMAIL)
+                ->setPassword(Hash::make('secret'))
+            ;
+
+            $user->save();
+            $user->refresh();
+            $user
+                ->addRoles([$role])
+                ->save()
+            ;
+
+            Auth::login($user);
+
+            $success = $cb($user);
+        } catch (\Exception $e) {
+            $success = false;
+        } finally {
+            DB::table(User::TABLE_NAME)->delete();
+            DB::table(Role::TABLE_NAME)->delete();
+            DB::table(UserRole::TABLE_NAME)->delete();
+        }
+
+        return $success;
+    }
 
     public function testServiceSingleton()
     {
@@ -45,82 +87,20 @@ class PhpCrystalTest extends TestCase
         $this->assertTrue(spl_object_id($s1) != spl_object_id($s2));
     }
 
-    /**
-     * @return void
-     */
-    public function testLoggableException()
+    public function testAdminRole()
     {
-        try {
-            Loggable::create("Something went wrong", 1)
-                ->_throw();
-        } catch (Loggable $e) {
-            $lastEntry = ErrorEntry::getLast(1)->first();
-            $this->assertEquals(1, $lastEntry->getCode());
-            $lastEntry->delete();
-        }
+        $this->withUser(function() {
+            $this->get('/admin')
+                ->assertStatus(200);
+
+            return true;
+        }, Role::ROLE_ADMIN);
     }
 
-    public function testUserCreation()
+    public function testAdminLogin()
     {
-        try {
-            $roleAdmin = Role::create()
-                ->setName(Role::ROLE_ADMIN)
-            ;
-
-            $roleAdmin->save();
-            $roleAdmin->refresh();
-
-            $user = new User();
-            $user
-                ->setEmail(self::TEST_EMAIL)
-                ->setPassword(Hash::make('secret'))
-            ;
-
-            $user->save();
-            $user->addRoles([$roleAdmin]);
-        } catch (\Exception $e) {
-            $this->assertTrue(false);
-        } finally {
-            if (isset($role))
-                $role->delete();
-            if (isset($user))
-                $user->delete();
-        }
-    }
-
-    /**
-     * @return void
-     */
-    public function testDataPagination()
-    {
-        DB::collection('users')->delete();
-
-        $user = new User();
-        $user
-            ->setEmail(self::TEST_EMAIL)
-            ->save();
-        $user->refresh();
-
-        sleep(1);
-
-        $user1 = new User();
-        $user1
-            ->setEmail(self::TEST_EMAIL_2)
-            ->save();
-        $user1->refresh();
-
-        $pagedData = User::getPaged(1, 10, function($query) {
-            User::orderByCreatedAt($query, User::ORDER_DIR_DESC);
-        });
-
-        $this->assertEquals(2, $pagedData['items']->count());
-        $this->assertEquals(2, $pagedData['items.count']);
-        $this->assertEquals(1, $pagedData['pages.current']);
-        $this->assertEquals(1, $pagedData['pages.count']);
-        $this->assertEquals(self::TEST_EMAIL_2, $pagedData['items'][0]->getEmail());
-
-        $user->delete();
-        $user1->delete();
+        $this->get('/admin/login')
+            ->assertStatus(200);
     }
 
     /**
