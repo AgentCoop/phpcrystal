@@ -2,6 +2,8 @@
 
 namespace App\Models\Logical\Repository;
 
+use Illuminate\Database\Eloquent\Collection;
+
 trait User
 {
     /**
@@ -27,26 +29,36 @@ trait User
     /**
      * @return string
      */
-    final public function getRole()
+    public function getPassword() : string
     {
-        return $this->role;
+        return $this->password;
     }
 
     /**
      * @return $this
      */
-    final public function setRole($role)
+    public function setPassword($pass)
     {
-        $this->role = $role;
+        $this->password = $pass;
 
         return $this;
     }
 
     /**
-     * @return bool
+     * @return Collection
      */
-    public function isAdmin()
+    final public function getRoles() : Collection
     {
-        return in_array(self::ROLE_ADMIN, $this->getRoles());
+        return $this->roles()->getResults();
+    }
+
+    /**
+     * @return $this
+     */
+    final public function addRoles($roles) : self
+    {
+        $this->roles()->saveMany($roles);
+
+        return $this;
     }
 }

@@ -11,7 +11,7 @@ RUN set -xe \
 		$PHPIZE_DEPS \
         freetype-dev \
         geoip-dev \
-        openssl-dev \
+        postgresql-dev \
         libpng \
         libjpeg-turbo
 
@@ -25,6 +25,7 @@ RUN set -xe \
     && docker-php-ext-install bcmath \
     && docker-php-ext-install gd \
     && docker-php-ext-install pdo_mysql \
+    && docker-php-ext-install pgsql pdo_pgsql  \
     && pecl install mongodb \
     && pecl install xdebug-2.6.0beta1 \
     && echo 'no' | pecl install redis  \

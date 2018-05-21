@@ -100,12 +100,20 @@ class SecurityPolicy extends AbstractBase
             case self::MODE_OVERWRITE:
                 $this
                     ->setRoles($input->getRoles())
+                    ->setPermissions($input->getPermissions())
                     ->setNotAuthenticatedPage($input->getNotAuthenticatedPage())
                     ->setNotAuthorizedPage($input->getNotAuthorizedPage());
                 break;
 
             case self::MODE_MERGE:
-                $this->setRoles($this->mergeArrays($this->getRoles(), $input->getRoles()));
+                $this
+                    ->setRoles($this->mergeArrays($this->getRoles(), $input->getRoles()))
+                    ->setPermissions($this->mergeArrays($this->getPermissions(), $input->getPermissions()))
+                ;
+
+                if (is_null($this->permissions)) {
+                    $this->setPermissions($input->getPermissions());
+                }
 
                 if (is_null($this->not_authenticated_page)) {
                     $this->setNotAuthenticatedPage($input->getNotAuthenticatedPage());

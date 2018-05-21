@@ -13,11 +13,14 @@ use App\Component\Package\Module\Manifest as ModuleManifest;
 
 use App\Component\Exception\Loggable;
 use App\Models\Physical\Support\Logging\MongoDB\ErrorEntry;
+
 use App\Models\Physical\Repository\User;
+use App\Models\Physical\Repository\Role;
 
 use App\TestModule\Services as Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class PhpCrystalTest extends TestCase
 {
@@ -57,24 +60,31 @@ class PhpCrystalTest extends TestCase
         }
     }
 
-    /**
-     * @return void
-     */
     public function testUserCreation()
     {
         try {
+            $roleAdmin = Role::create()
+                ->setName(Role::ROLE_ADMIN)
+            ;
+
+            $roleAdmin->save();
+            $roleAdmin->refresh();
+
             $user = new User();
             $user
                 ->setEmail(self::TEST_EMAIL)
-                ->save();
-            $user->refresh();
+                ->setPassword(Hash::make('secret'))
+            ;
 
-            $user1 = User::getByEmail(self::TEST_EMAIL);
-            $this->assertEquals(self::TEST_EMAIL, $user1->getEmail());
-
-            $user->delete();
+            $user->save();
+            $user->addRoles([$roleAdmin]);
         } catch (\Exception $e) {
             $this->assertTrue(false);
+        } finally {
+            if (isset($role))
+                $role->delete();
+            if (isset($user))
+                $user->delete();
         }
     }
 
