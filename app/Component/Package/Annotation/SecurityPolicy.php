@@ -12,7 +12,8 @@ namespace App\Component\Package\Annotation;
  *   @Attribute("permissions", type = "array"),
  *   @Attribute("not_authenticated_page", type = "string"),
  *   @Attribute("not_authorized_page", type = "string"),
- *   @Attribute("mode", type = "string")
+ *   @Attribute("mode", type = "string"),
+ *   @Attribute("disabled", type = "bool")
  * })
  */
 class SecurityPolicy extends AbstractBase
@@ -27,7 +28,7 @@ class SecurityPolicy extends AbstractBase
      */
     public function getRoles()
     {
-        return $this->roles;
+        return (array)$this->roles;
     }
 
     /**
@@ -45,7 +46,7 @@ class SecurityPolicy extends AbstractBase
      */
     public function getPermissions() : array
     {
-        return $this->permissions;
+        return (array)$this->permissions;
     }
 
     /**
@@ -53,7 +54,7 @@ class SecurityPolicy extends AbstractBase
      */
     public function setPermissions($perms) : self
     {
-        $this->roles = (array)$perms;
+        $this->permissions = (array)$perms;
 
         return $this;
     }
@@ -94,33 +95,41 @@ class SecurityPolicy extends AbstractBase
         return $this;
     }
 
-    public function merge(SecurityPolicy $input)
+    public function merge($descendant)
     {
-        switch ($input->getMode()) {
+        parent::merge($descendant);
+
+        // If annotation is disabled, do not merge its attributes into the parent one.
+        // The resulting annotation will be disabled as well.
+        if ($descendant->getDisabled()) {
+            return;
+        }
+
+        switch ($descendant->getMode()) {
             case self::MODE_OVERWRITE:
                 $this
-                    ->setRoles($input->getRoles())
-                    ->setPermissions($input->getPermissions())
-                    ->setNotAuthenticatedPage($input->getNotAuthenticatedPage())
-                    ->setNotAuthorizedPage($input->getNotAuthorizedPage());
+                    ->setRoles($descendant->getRoles())
+                    ->setPermissions($descendant->getPermissions())
+                    ->setNotAuthenticatedPage($descendant->getNotAuthenticatedPage())
+                    ->setNotAuthorizedPage($descendant->getNotAuthorizedPage());
                 break;
 
             case self::MODE_MERGE:
                 $this
-                    ->setRoles($this->mergeArrays($this->getRoles(), $input->getRoles()))
-                    ->setPermissions($this->mergeArrays($this->getPermissions(), $input->getPermissions()))
+                    ->setRoles($this->mergeArrays($this->getRoles(), $descendant->getRoles()))
+                    ->setPermissions($this->mergeArrays($this->getPermissions(), $descendant->getPermissions()))
                 ;
 
                 if (is_null($this->permissions)) {
-                    $this->setPermissions($input->getPermissions());
+                    $this->setPermissions($descendant->getPermissions());
                 }
 
                 if (is_null($this->not_authenticated_page)) {
-                    $this->setNotAuthenticatedPage($input->getNotAuthenticatedPage());
+                    $this->setNotAuthenticatedPage($descendant->getNotAuthenticatedPage());
                 }
 
                 if (is_null($this->not_authorized_page)) {
-                    $this->setNotAuthorizedPage($input->getNotAuthorizedPage());
+                    $this->setNotAuthorizedPage($descendant->getNotAuthorizedPage());
                 }
 
                 break;

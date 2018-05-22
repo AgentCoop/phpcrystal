@@ -28,7 +28,8 @@ class Admin extends Controller
     }
 
     /**
-     * @SecurityPolicy(mode="overwrite")
+     * @SecurityPolicy(disabled=true)
+     *
      * @Route("/admin/login", name="admin_login")
      */
     public function loginPage(Request $request)

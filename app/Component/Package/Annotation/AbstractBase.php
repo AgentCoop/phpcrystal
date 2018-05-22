@@ -10,11 +10,14 @@ abstract class AbstractBase
     /** @var string */
     private $value;
 
+    private $disabled = false;
+
     protected $mode;
 
-    protected function mergeArrays($a, $b)
+
+    protected function mergeArrays(array $a, array $b)
     {
-        return array_unique(array_merge((array)$a, (array)$b));
+        return array_unique(array_merge($a, $b));
     }
 
     /**
@@ -42,6 +45,11 @@ abstract class AbstractBase
         }
     }
 
+    public function merge($descendant)
+    {
+        $this->disabled = $descendant->getDisabled();
+    }
+
     /**
      * @return mixed
     */
@@ -61,5 +69,23 @@ abstract class AbstractBase
     public function setMode($mode) : void
     {
         $this->mode = $mode;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDisabled()
+    {
+        return $this->disabled;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setDisabled($value)
+    {
+        $this->disabled = boolval($value);
+
+        return $this;
     }
 }

@@ -35,6 +35,11 @@ class SecurityManager
 
         /** @var SecurityPolicy $securityPolicy */
         $securityPolicy = $packageManager->getAnnotationInstance($controllerName, $methodName, SecurityPolicy::class);
+
+        if ($securityPolicy->getDisabled()) { // Nothing to do
+            return $next($request);
+        }
+
         $allowedRoles = $securityPolicy->getRoles();
 
         if (empty($allowedRoles)) {
